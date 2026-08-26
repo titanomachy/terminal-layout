@@ -141,6 +141,53 @@ This project follows Semantic Versioning.
   its test/example files into the Nimble tasks and ignore rules.
 - Add callout guidance to the README, API landing page, façade docs, and clear
   Nim-generated API comments for every public Phase 4 symbol.
+- Add `BannerBorderMode` rule and boxed presentation values plus a reusable
+  `Banner` model containing multiline text, an optional subtitle, complete
+  outer width, alignment, one-cell fill glyph, panel padding and border
+  configuration, independent text/fill styles, color control, and LF/CRLF
+  output.
+- Add `BannerTheme` with named light rule, square boxed, heavy boxed, double
+  boxed, and seven-bit ASCII presets plus validated `initBannerTheme` and
+  `customBannerTheme` constructors.
+- Add `initBanner`, concise `banner`, immutable subtitle/width/alignment/fill/
+  padding/border/theme/color/line-ending helpers, `renderBanner`, `render`, and
+  `$` APIs.
+- Add deterministic rule rendering that fills every row to its exact outer
+  terminal-cell width, applies explicit horizontal/vertical padding, turns
+  empty rows into complete rules, and assigns the extra odd centered cell to
+  the right.
+- Add panel-backed boxed rendering that reuses existing border, padding,
+  alignment, ANSI-aware truncation, plain-output, and width geometry rather
+  than adding a second box engine.
+- Add grapheme-safe fitting for multiline, CJK, combining-mark, emoji, and ANSI
+  content, with plain rendering that strips input ANSI and suppresses banner
+  styles.
+- Add focused banner model and immutability tests, exact-output snapshot tests,
+  terminal-cell width and odd-alignment tests, Unicode/ANSI geometry tests,
+  style-reset and plain-output tests, CRLF/no-trailing-ending contract tests,
+  and invalid width/padding/glyph/theme/line-ending tests.
+- Add a banner example covering section headings, a styled build summary, and
+  a plain application title, and wire its focused test and example into the
+  Nimble tasks and generated executable ignore rules.
+- Add banner guidance to the README, generated API landing page, façade docs,
+  and complete Nim-generated API comments for every public Phase 5 type,
+  preset, constructor, validator, configuration helper, and renderer.
+- Add a focused Phase 6 composition suite with exact nested-list/panel,
+  tree/card, task-list/callout, and banner-separated snapshots.
+- Add nested ANSI reset-containment and outer plain-rendering tests covering
+  styled child output, CJK text, combining marks, and emoji graphemes.
+- Add 64 reproducible property-style iterations covering deterministic output
+  and constrained terminal-cell widths across panels, banners, lists, trees,
+  and callouts.
+- Add `examples/all_layouts.nim`, composing nested lists in a panel, a tree in
+  a card, a task list in a callout, and banners as section separators.
+- Add a development-only `suiteIntegration` task that imports all four terminal
+  suite façades, renders actual TerminalTable and TerminalGraph output inside
+  panels, and embeds TerminalLayout strings in table cells without adding a
+  production dependency.
+- Add Phase 6 composition and hardening guidance to the README, API landing
+  page, façade documentation, panel renderer documentation, Nimble tasks, and
+  generated executable ignore rules.
 
 ### Changed
 
@@ -156,6 +203,17 @@ This project follows Semantic Versioning.
   and documentation criterion in `PLAN1.md`.
 - Mark every completed Phase 4 public API, rendering behavior, test, example,
   and documentation criterion in `PLAN1.md`.
+- Mark every completed Phase 5 public API, rendering behavior, test, example,
+  and documentation criterion in `PLAN1.md`.
+- Replace the side-effect-free banner namespace skeleton with the complete
+  Phase 5 implementation while preserving its stable import path and façade
+  export.
+- Preserve leading whitespace on already-fitting panel body rows so nested
+  rendered trees, lists, tables, and graphs retain their structural columns;
+  only oversized rows enter ANSI-aware wrapping.
+- Mark completed Phase 6 composition, façade, hardening, interoperability,
+  ANSI/plain-output, width-property, dependency, example, and documentation
+  criteria in `PLANS/PLAN1.md`.
 
 ### Compatibility
 
@@ -172,3 +230,7 @@ This project follows Semantic Versioning.
   2.2.10.
 - Verify the focused callout suite and callout example with Nim 2.2.10, and
   pass the complete Nimble test, example, and documentation tasks.
+- Verify the focused banner suite and banner example with Nim 2.2.10, and pass
+  the complete Nimble test, example, import-probe, and documentation tasks.
+- Verify the Phase 6 composition suite, all-layouts example, and sibling-suite
+  integration check with Nim 2.2.10 on Linux.

@@ -275,11 +275,19 @@ proc bodyLines(panel: Panel; contentWidth: int): seq[string] =
   let value = if panel.useColor: panel.body else: stripAnsi(panel.body)
   case panel.overflow
   of overflowWrap:
-    result = wrapAnsi(value, contentWidth, panel.wrapMode)
-    for line in result:
-      if displayWidth(line) > contentWidth:
-        raise newException(ValueError,
-          "panel width cannot contain a complete body grapheme")
+    # Preserve already-fitted logical rows exactly. In particular, leading
+    # spaces in rendered trees and nested lists are layout data rather than
+    # disposable word-wrapping whitespace.
+    for logicalLine in logicalLines(value):
+      if displayWidth(logicalLine) <= contentWidth:
+        result.add logicalLine
+      else:
+        let wrapped = wrapAnsi(logicalLine, contentWidth, panel.wrapMode)
+        for line in wrapped:
+          if displayWidth(line) > contentWidth:
+            raise newException(ValueError,
+              "panel width cannot contain a complete body grapheme")
+          result.add line
   of overflowTruncate:
     for line in logicalLines(value):
       result.add truncateAnsi(line, contentWidth)
@@ -329,6 +337,10 @@ proc renderBorderLine(panel: Panel; top: bool;
 
 proc renderPanel*(panel: Panel): string =
   ## Renders a panel or card without an appended trailing line ending.
+  ##
+  ## Logical body rows that already fit retain their leading whitespace so
+  ## pre-rendered trees, lists, tables, and graphs preserve their structure.
+  ## Only rows wider than the content area are wrapped or truncated.
   ##
   ## Bordered title/footer labels use one border-colored separator cell on
   ## each side whenever the horizontal run has at least three cells. A label

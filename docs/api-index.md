@@ -6,8 +6,9 @@ callouts, and banners without printing or querying the terminal.
 
 Phase 0 establishes the package foundation. Phase 1 adds generic trees, Phase
 2 adds panels and cards, Phase 3 adds nested bullet, numbered, and task lists
-plus generic indentation, and Phase 4 adds semantic callouts. The banner
-namespace already compiles and will be implemented in a later phase.
+plus generic indentation, Phase 4 adds semantic callouts, and Phase 5 adds
+non-semantic banners. Phase 6 validates cross-component composition, façade
+exports, width properties, and sibling-suite string boundaries.
 
 - [Main `terminal_layout` façade](terminal_layout.html)
 - [Search all exported symbols](theindex.html)
@@ -67,6 +68,20 @@ let result = success("All checks passed", title = "CI", width = 28,
 echo result.render()
 ```
 
+## Banner example
+
+```nim
+import std/options
+import terminal_layout
+
+let summary = initBanner("BUILD COMPLETE",
+  subtitle = some("12 checks · 0 failures"),
+  width = 36,
+  theme = heavyBannerTheme)
+
+echo summary.render()
+```
+
 ## Foundation modules
 
 - [`core`](terminal_layout/core.html) — validated widths and insets, overflow
@@ -80,7 +95,8 @@ echo result.render()
   rendering options, bullet/number/task conveniences, and indentation.
 - [`callouts`](terminal_layout/callouts.html) — semantic models, explicit
   palettes, constructors, validation, and panel-backed rendering.
-- [`banners`](terminal_layout/banners.html) — reserved banner namespace.
+- [`banners`](terminal_layout/banners.html) — non-semantic headings,
+  rule/box themes, validation, immutable configuration, and rendering.
 
 The façade also re-exports `terminal_style`, including `TextAlignment`, ANSI
 styling, terminal-cell measurement, wrapping, truncation, and padding.
@@ -164,6 +180,49 @@ navigation, and generic indentation.
 
 See `examples/callouts.nim` for boxed, compact, custom, and nested-list status
 reports without a logging-framework dependency.
+
+## Banner behavior
+
+- `banner` concisely creates a centered rule heading; `initBanner` configures
+  optional subtitles, complete outer width, alignment, panel padding, themes,
+  text/fill styles, color, and line endings.
+- Plain-rule, square-boxed, heavy-boxed, double-boxed, and ASCII presets are
+  named explicitly. Custom themes validate a plain one-cell fill glyph and
+  their panel border glyphs before output is produced.
+- Rule banners place fill cells in all unused columns. Empty and vertical
+  padding rows become complete rules, and centered odd spare cells put the
+  deterministic extra cell on the right.
+- Boxed banners reuse the panel renderer for borders, padding, fitting, and
+  exact outer-width geometry.
+- Main text may be multiline and the optional subtitle follows it. ANSI-aware
+  grapheme truncation never splits CJK, combining clusters, emoji, or escape
+  sequences.
+- Plain mode strips existing ANSI and suppresses styles. LF and CRLF output
+  never has an added trailing line ending, and rendering does not mutate the
+  banner model.
+
+See `examples/banners.nim` for section-heading, build-summary, and
+application-title examples. FIGlet-style large fonts remain deferred.
+
+## Composition and hardening
+
+- Rendered strings are the only integration boundary. Nested lists retain
+  their indentation inside panels, trees retain their connector columns inside
+  cards, and callouts accept rendered lists without component adapters.
+- An outer `useColor = false` strips ANSI from already-rendered children while
+  keeping plain semantic markers, Unicode graphemes, and visible widths intact.
+- Focused composition snapshots cover list/panel, tree/card, list/callout, and
+  banner-separated output. Seeded property-style tests vary input and requested
+  widths across every constrained component.
+- The façade and every direct submodule remain importable without output,
+  terminal queries, or other side effects.
+- `nimble suiteIntegration` imports TerminalStyle, TerminalTable,
+  TerminalGraph, and TerminalLayout together, checks public-name coexistence,
+  renders actual table and graph strings inside panels, and places layout
+  strings in table cells. Its sibling source paths are development-only.
+
+See `examples/all_layouts.nim` for one deterministic report containing every
+TerminalLayout component.
 
 ## Generate locally
 

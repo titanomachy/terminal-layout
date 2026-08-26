@@ -9,12 +9,17 @@ htmldocs/
 /tests/test_panels
 /tests/test_lists
 /tests/test_callouts
+/tests/test_banners
+/tests/test_composition
+/tests/test_suite_integration
 /tests/import_probe
 /examples/foundation
 /examples/trees
 /examples/panels
 /examples/lists
 /examples/callouts
+/examples/banners
+/examples/all_layouts
 
 # Nimble development metadata
 nimble.develop

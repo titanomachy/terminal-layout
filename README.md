@@ -2,12 +2,12 @@
 
 TerminalLayout is the output-only structural layer of the Nim terminal suite.
 It provides generic trees, panels, cards, nested lists, reusable indentation,
-and semantic callouts, and will add banners. Renderers return
+semantic callouts, and non-semantic banners. Renderers return
 deterministic strings; importing the package or constructing a value never
 prints, queries the terminal, or mutates terminal state.
 
 The package currently contains the shared foundation plus complete tree,
-panel/card, list, and callout renderers, with shared tests, examples, and
+panel/card, list, callout, and banner renderers, with shared tests, examples, and
 generated API documentation.
 
 Requires Nim 2.0.0 or newer and TerminalStyle 0.1.1 or newer.
@@ -120,7 +120,8 @@ color, and line endings without mutating the original value.
 
 - Body text wraps by default or truncates each explicit line when
   `overflowTruncate` is selected. Every emitted row is padded to the outer
-  width in visible terminal cells.
+  width in visible terminal cells. Already-fitting rows retain leading spaces,
+  preserving the structure of rendered trees, lists, tables, and graphs.
 - A bordered title or footer has one separator cell on each side when its
   horizontal run has at least three cells. Colliding labels are truncated by
   complete styled graphemes and never replace the corners.
@@ -251,6 +252,83 @@ plain marker, panel preset, and independent marker/body/border styles.
 The [callout example](examples/callouts.nim) builds boxed, compact, custom, and
 nested-list status reports as ordinary strings without a logging dependency.
 
+## Banners
+
+Banners emphasize application titles, section headings, and announcements
+without implying semantic severity. The concise `banner` constructor creates a
+centered rule banner; `initBanner` exposes subtitles, alignment, padding,
+themes, styles, color behavior, and LF/CRLF output:
+
+```nim
+echo banner("Dependencies", width = 36).render()
+
+let summary = initBanner(
+  "BUILD COMPLETE",
+  width = 36,
+  theme = heavyBannerTheme,
+  textStyle = initTerminalStyle(attributes = {taBold}),
+  fillStyle = initTerminalStyle(foreground = colorGreen))
+  .withSubtitle("12 checks · 0 failures")
+
+echo summary.render()
+```
+
+`plainRuleBannerTheme`, `boxedBannerTheme`, `heavyBannerTheme`,
+`doubleBannerTheme`, and `asciiBannerTheme` provide named presets.
+`initBannerTheme` and `customBannerTheme` validate custom one-cell fill glyphs
+and panel borders before rendering.
+
+- Rule mode fills every output row to the exact complete outer width. Padding
+  separates non-empty text from the rule; empty and vertical-padding rows are
+  complete rules.
+- Left, center, and right placement is measured in terminal cells. Centered
+  odd spare space puts the extra cell on the right deterministically.
+- Boxed themes delegate border, padding, alignment, truncation, and outer-width
+  geometry to panels rather than maintaining another box renderer.
+- Multiline text is supported and an optional subtitle follows its lines.
+  Fitting uses complete ANSI-aware grapheme clusters, so CJK, combining marks,
+  emoji, and styled input are not split.
+- `useColor = false` strips input ANSI and suppresses text/fill styles.
+  Rendering never mutates `Banner` values or appends a line ending.
+
+The [banner example](examples/banners.nim) demonstrates section headings, a
+styled build summary, and a plain application title. Large-font/FIGlet output
+remains intentionally outside the package scope.
+
+## Composition
+
+Every renderer returns an ordinary string, which is the integration boundary
+between TerminalLayout components and the wider terminal suite. For example, a
+nested list can become a panel body without adapters or extra dependencies:
+
+```nim
+import std/options
+import terminal_layout
+
+let navigation = [
+  listItem("Home"),
+  listItem("Project", listItem("Source"), listItem("Tests"))
+]
+
+let body = bulletList(navigation,
+  initListOptions(useColor = false).withWidth(28))
+
+echo initPanel(body, width = 32, title = some("Navigation"),
+  useColor = false).render()
+```
+
+Already-rendered children retain nested whitespace when their rows fit. The
+outer component owns its own width and color policy: setting its
+`useColor = false` strips ANSI embedded by any child while preserving semantic
+markers and Unicode-cell geometry.
+
+The [all-layouts example](examples/all_layouts.nim) composes nested lists in a
+panel, a tree in a card, a task list in a callout, and banner section
+separators. `nimble suiteIntegration` additionally checks actual sibling
+TerminalTable and TerminalGraph output in both directions when those
+repositories are present beside TerminalLayout; they remain test-only and are
+not production dependencies.
+
 ## Foundation API
 
 The façade also exports the shared foundation and complete TerminalStyle API:
@@ -278,9 +356,6 @@ doAssert insets.horizontalInset == 4
 doAssert displayWidth("界") == 2
 doAssert joinLayoutLines(lines) == "first\nsecond"
 ```
-
-The banner renderer will be added in a later phase. Its module name is already
-stable and side-effect free.
 
 ## Rendering contract
 
@@ -310,8 +385,8 @@ TerminalLayout components follow these package-wide rules:
   themes and options, deterministic rendering, and generic indentation.
 - `terminal_layout/callouts` contains semantic callout models, explicit
   palettes, convenience constructors, validation, and panel-backed rendering.
-- `terminal_layout/banners` is the stable component namespace for the upcoming
-  banner implementation phase.
+- `terminal_layout/banners` contains banner models, rule/box themes,
+  validation, immutable helpers, and deterministic rendering.
 - `terminal_layout` re-exports every stable module and `terminal_style`.
 
 ## Development
@@ -320,10 +395,13 @@ TerminalLayout components follow these package-wide rules:
 nimble test
 nimble examples
 nimble docs
+# From the terminal-suite workspace, with sibling repositories available:
+nimble suiteIntegration
 ```
 
 `nimble docs` generates the API reference in `htmldocs/`. The shared fixtures
 cover ANSI, CJK, combining-mark, emoji, empty, multiline, and CRLF input. The
-tree, panel, list, and callout suites add exact snapshots,
-validation/contract checks, Unicode/ANSI geometry coverage, and input
-non-mutation checks.
+tree, panel, list, callout, banner, and composition suites add exact snapshots,
+validation/contract checks, seeded width properties, Unicode/ANSI geometry and
+style-reset coverage, plain nested-output checks, and input non-mutation
+checks.
