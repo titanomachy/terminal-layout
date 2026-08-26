@@ -1,6 +1,11 @@
 ## Minimal TerminalLayout façade example.
 
-import terminal_layout
+when compiles((block:
+  import terminal_layout
+)):
+  import terminal_layout
+else:
+  import ../src/terminal_layout
 
 let
   width = initLayoutWidth(32)
@@ -10,4 +15,3 @@ let
 doAssert width.cellCount == 32
 doAssert insets.horizontalInset == 4
 doAssert displayWidth(message) == 16
-

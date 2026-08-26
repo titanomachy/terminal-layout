@@ -1,13 +1,14 @@
 # TerminalLayout
 
 TerminalLayout is the output-only structural layer of the Nim terminal suite.
-It provides generic trees and will add panels and cards, nested lists,
+It provides generic trees, panels, and cards, and will add nested lists,
 semantic callouts, and banners. Renderers return deterministic strings;
 importing the package or constructing a value never prints, queries the
 terminal, or mutates terminal state.
 
-The package currently contains the Phase 0 foundation and the complete Phase 1
-tree renderer, with shared tests, examples, and generated API documentation.
+The package currently contains the shared foundation, complete tree renderer,
+and complete panel/card renderer, with shared tests, examples, and generated
+API documentation.
 
 Requires Nim 2.0.0 or newer and TerminalStyle 0.1.1 or newer.
 
@@ -88,6 +89,53 @@ The [tree example](examples/trees.nim) manually models a directory, JSON-like
 data, and a dependency hierarchy. TerminalLayout deliberately does not walk
 the filesystem or parse JSON on the caller's behalf.
 
+## Panels and cards
+
+Panels are width-aware composition containers for arbitrary text and rendered
+TerminalLayout, TerminalTable, or TerminalGraph output. Width is always the
+complete outer width, including border columns and horizontal padding:
+
+```nim
+let report = initPanel(
+  "Builds: 8\nFailures: 0",
+  width = 32,
+  padding = initPanelPadding(top = 1, right = 2, bottom = 1, left = 2),
+  theme = doublePanelTheme)
+  .withTitle("CI report", alignCenter)
+  .withFooter("main", alignRight)
+
+echo report.render()
+```
+
+`squarePanelTheme`, `roundedPanelTheme`, `heavyPanelTheme`,
+`doublePanelTheme`, `asciiPanelTheme`, and `borderlessPanelTheme` provide named
+presets. `initPanelTheme` and `customPanelTheme` validate custom one-cell
+borders before rendering. Each `Panel` stores independent body, title, footer,
+and border styles plus body and label alignments.
+
+`initCard` returns the same `Panel` model with rounded borders and one cell of
+padding on every side; `card` is its concise convenience form. Fluent helpers
+can change titles, footers, width, padding, theme, content alignment, overflow,
+color, and line endings without mutating the original value.
+
+- Body text wraps by default or truncates each explicit line when
+  `overflowTruncate` is selected. Every emitted row is padded to the outer
+  width in visible terminal cells.
+- A bordered title or footer has one separator cell on each side when its
+  horizontal run has at least three cells. Colliding labels are truncated by
+  complete styled graphemes and never replace the corners.
+- Empty bodies produce one body row. Top and bottom padding always produce the
+  exact requested number of blank rows.
+- `useColor = false` strips ANSI already present in the body and labels and
+  suppresses panel styles.
+- Borderless panels keep the same width, padding, alignment, title, and footer
+  contract while omitting the enclosing rules.
+- Rendering never mutates `Panel` values or appends a line ending.
+
+The [panel example](examples/panels.nim) composes representative table and
+graph strings, plus a rendered tree, without taking TerminalTable or
+TerminalGraph as production dependencies.
+
 ## Foundation API
 
 The façade also exports the shared foundation and complete TerminalStyle API:
@@ -116,8 +164,8 @@ doAssert displayWidth("界") == 2
 doAssert joinLayoutLines(lines) == "first\nsecond"
 ```
 
-Panel, list, callout, and banner renderers will be added vertically in later
-phases. Their module names are already stable and side-effect free.
+List, callout, and banner renderers will be added vertically in later phases.
+Their module names are already stable and side-effect free.
 
 ## Rendering contract
 
@@ -141,8 +189,10 @@ TerminalLayout components follow these package-wide rules:
   presets.
 - `terminal_layout/trees` contains the generic tree model, builders, themes,
   options, validation, and deterministic renderer.
-- `terminal_layout/panels`, `lists`, `callouts`, and `banners` are stable
-  component namespaces for upcoming implementation phases.
+- `terminal_layout/panels` contains panel/card models, padding, themes,
+  validation, fluent configuration, and deterministic rendering.
+- `terminal_layout/lists`, `callouts`, and `banners` are stable component
+  namespaces for upcoming implementation phases.
 - `terminal_layout` re-exports every stable module and `terminal_style`.
 
 ## Development
@@ -155,4 +205,4 @@ nimble docs
 
 `nimble docs` generates the API reference in `htmldocs/`. The shared fixtures
 cover ANSI, CJK, combining-mark, emoji, empty, multiline, and CRLF input. The
-tree suite adds snapshots for every theme and structural edge case.
+tree and panel suites add snapshots for their themes and structural edge cases.

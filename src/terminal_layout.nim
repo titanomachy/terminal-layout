@@ -9,11 +9,10 @@
 ##
 ##   import terminal_layout
 ##
-##   let project = tree("project",
-##     tree("src", tree("main.nim"), tree("render.nim")),
-##     tree("tests", tree("test_render.nim")))
+##   let project = tree("project", tree("src"), tree("tests"))
 ##
-##   echo project.render(theme = roundedTreeTheme)
+##   echo initCard(project.render(), width = 32)
+##     .withTitle("Project").render()
 
 import terminal_style
 import terminal_layout/[banners, callouts, core, lists, panels, themes, trees]

@@ -1,6 +1,11 @@
 ## Manual tree examples using caller-supplied domain data.
 
-import terminal_layout
+when compiles((block:
+  import terminal_layout
+)):
+  import terminal_layout
+else:
+  import ../src/terminal_layout
 
 let directoryTree = tree("terminal-layout",
   tree("src",
@@ -29,4 +34,3 @@ when isMainModule:
   echo "\nDependencies"
   echo dependencyTree.render(
     options = initTreeOptions(useColor = false).withWidth(40))
-

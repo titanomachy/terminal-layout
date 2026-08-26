@@ -15,11 +15,13 @@ requires "terminal_style >= 0.1.1"
 task test, "Run the terminal_layout test suite":
   exec "nim r --path:src tests/test_core.nim"
   exec "nim r --path:src tests/test_trees.nim"
+  exec "nim r --path:src tests/test_panels.nim"
   exec "nim r --hints:off --warnings:off --path:src tests/import_probe.nim"
 
 task examples, "Check that all examples compile":
   exec "nim check --path:src examples/foundation.nim"
   exec "nim check --path:src examples/trees.nim"
+  exec "nim check --path:src examples/panels.nim"
 
 task docs, "Generate terminal_layout API documentation":
   exec "nim doc --project --index:on --outdir:htmldocs --path:src src/terminal_layout.nim"

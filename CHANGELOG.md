@@ -60,6 +60,31 @@ This project follows Semantic Versioning.
   generated API index, and public Nim doc comments.
 - Include the tree tests and example in the package Nimble tasks and generated
   executable ignore rules.
+- Add a reusable `Panel` value model with optional single-line title and footer,
+  independent body/title/footer/border styles, body and label alignments,
+  validated outer width, overflow behavior, color control, and LF/CRLF output.
+- Add validated `PanelPadding`, immutable panel configuration helpers, and
+  `initPanel`, `renderPanel`, `render`, and `$` entry points.
+- Add `initCard` and `card` conveniences that return the same `Panel` model with
+  rounded borders and one-cell padding on every side.
+- Add square, rounded, heavy, double, ASCII, borderless, and validated custom
+  panel themes.
+- Add terminal-cell-aware panel geometry, ANSI-safe wrapping and truncation,
+  complete-row padding, deterministic empty bodies and asymmetric padding,
+  and plain rendering that strips existing ANSI controls.
+- Add independently aligned title/footer border labels with preserved corners,
+  documented separator spacing, and grapheme-safe collision truncation.
+- Add panel snapshots and contract tests covering every preset, cards, all
+  alignments, padding, empty/multiline/nested bodies, CJK, combining marks,
+  emoji, ANSI styles, plain output, CRLF, exact widths, and invalid inputs.
+- Add a panel composition example using representative TerminalTable and
+  TerminalGraph output strings plus a rendered tree, without new production
+  dependencies.
+- Add panel/card user guidance, generated API documentation prose, and Nim doc
+  comments for every public panel type, preset, constructor, helper,
+  validator, and renderer.
+- Include the panel test and example in the package Nimble tasks and generated
+  executable ignore rules.
 
 ### Changed
 
@@ -69,6 +94,8 @@ This project follows Semantic Versioning.
 - Mark every completed Phase 0 deliverable and exit criterion in `PLAN1.md`.
 - Mark every completed Phase 1 public API, rendering behavior, test, and
   documentation criterion in `PLAN1.md`.
+- Mark every completed Phase 2 public API, rendering behavior, test, example,
+  and documentation criterion in `PLAN1.md`.
 
 ### Compatibility
 
@@ -77,3 +104,6 @@ This project follows Semantic Versioning.
 - Verify the foundation tests and compile probes with Nim 2.0.10 and 2.2.10.
 - Verify the tree suite with Nim 2.0.10 and 2.2.10, and pass the complete
   Nimble test, example, documentation, and package-validation tasks.
+- Verify the foundation, tree, panel, and import suites with Nim 2.0.10 and
+  2.2.10, compile every example on both versions, and pass the complete Nimble
+  test, example, documentation, and package-validation tasks.
