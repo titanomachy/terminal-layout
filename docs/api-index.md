@@ -4,9 +4,9 @@ TerminalLayout is the output-only structural layer of the Nim terminal suite.
 It provides shared, Unicode-cell-aware conventions for trees, panels, lists,
 callouts, and banners without printing or querying the terminal.
 
-Phase 0 establishes the package foundation. Phase 1 adds generic tree models,
-builders, themes, options, and deterministic rendering. Phase 2 adds bordered
-panels and card conveniences. The remaining component namespaces already
+Phase 0 establishes the package foundation. Phase 1 adds generic trees, Phase
+2 adds panels and cards, and Phase 3 adds nested bullet, numbered, and task
+lists plus generic indentation. The remaining component namespaces already
 compile and will be implemented in later phases.
 
 - [Main `terminal_layout` façade](terminal_layout.html)
@@ -43,6 +43,19 @@ let report = initCard("Builds: 8\nFailures: 0", width = 32)
 echo report.render()
 ```
 
+## List example
+
+```nim
+import terminal_layout
+
+let checklist = [
+  listItem("Tests").withTaskState(taskChecked),
+  listItem("Release").withTaskState(taskUnchecked)
+]
+
+echo taskList(checklist, initListOptions(useColor = false))
+```
+
 ## Foundation modules
 
 - [`core`](terminal_layout/core.html) — validated widths and insets, overflow
@@ -52,7 +65,8 @@ echo report.render()
   validation, options, and ANSI-aware rendering.
 - [`panels`](terminal_layout/panels.html) — panel/card models, padding, border
   themes, validation, fluent configuration, and deterministic rendering.
-- [`lists`](terminal_layout/lists.html) — reserved list namespace.
+- [`lists`](terminal_layout/lists.html) — recursive list models, marker themes,
+  rendering options, bullet/number/task conveniences, and indentation.
 - [`callouts`](terminal_layout/callouts.html) — reserved semantic callout
   namespace.
 - [`banners`](terminal_layout/banners.html) — reserved banner namespace.
@@ -95,6 +109,28 @@ constructed without filesystem walking or parser dependencies.
 
 See `examples/panels.nim` for representative rendered table and graph strings
 and a tree nested inside panels without extra production dependencies.
+
+## List behavior
+
+- `listItem` creates concise nested literals; `initListItem`, `add`, and
+  `addChild` support incremental ordered construction.
+- `ListKind` selects bullet, numbered, or task markers. A parent's
+  `withChildKind` setting changes its direct nested level, allowing kinds to be
+  mixed without changing sibling order.
+- Ordered sibling groups reserve their widest marker width, keeping item text
+  aligned across digit-count changes. Each numbered nested level restarts at
+  `startingNumber` and uses the configured plain, visible delimiter.
+- Explicit and wrapped continuation lines use hanging indentation. Optional
+  width constrains complete output lines without padding shorter lines.
+- Unicode, ASCII, and validated custom themes keep marker and body styles
+  independent; an item can override its own body style.
+- Task state is represented by visible checked, unchecked, and indeterminate
+  markers even when color is disabled. Plain mode also strips input ANSI.
+- `indent` prefixes arbitrary multiline text while safely closing/restoring
+  ANSI state and normalizing output to validated LF or CRLF.
+
+See `examples/lists.nim` for a checklist, numbered procedure, mixed nested
+navigation, and generic indentation.
 
 ## Generate locally
 

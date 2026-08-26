@@ -7,10 +7,12 @@ htmldocs/
 /tests/test_core
 /tests/test_trees
 /tests/test_panels
+/tests/test_lists
 /tests/import_probe
 /examples/foundation
 /examples/trees
 /examples/panels
+/examples/lists
 
 # Nimble development metadata
 nimble.develop

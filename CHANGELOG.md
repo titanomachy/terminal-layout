@@ -85,6 +85,35 @@ This project follows Semantic Versioning.
   validator, and renderer.
 - Include the panel test and example in the package Nimble tasks and generated
   executable ignore rules.
+- Add a recursive `ListItem` value model with ordered children, optional body
+  style and task state, and explicit nested-level `ListKind` overrides.
+- Add `ListKind` bullet, number, and task variants plus unchecked, checked, and
+  indeterminate semantic `TaskState` values.
+- Add concise `listItem` literals, copying constructors, immutable style/task/
+  child-kind modifiers, and incremental `add`/`addChild` builders.
+- Add validated `ListOptions` for the starting number, plain visible delimiter,
+  per-depth indentation, optional maximum outer width, wrap/truncate behavior,
+  wrapping mode, color, and LF/CRLF output.
+- Add Unicode, ASCII, and validated custom `ListTheme` markers with independent
+  marker and item-body styles.
+- Add deterministic `renderList`, `bulletList`, `numberedList`, and `taskList`
+  rendering for nested values and concise plain-string inputs.
+- Add hanging indentation for explicit and wrapped item lines, right-aligned
+  ordered marker columns across digit changes, stable nested traversal, and
+  mixed list kinds at caller-selected child levels.
+- Add semantic task markers that remain visible in plain output, ANSI-safe
+  wrapping/truncation, grapheme-aware maximum widths, and input ANSI stripping
+  when color is disabled.
+- Add an ANSI-aware `indent` helper with non-negative cell indentation,
+  LF/CRLF normalization, plain rendering, and preserved empty/trailing lines.
+- Add focused list model, exact snapshot, Unicode/ANSI width, style-reset,
+  validation, no-trailing-whitespace, CRLF, maximum-width, and non-mutation
+  tests covering all Phase 3 input cases.
+- Add checklist, numbered procedure, mixed nested navigation, and generic
+  indentation examples, and wire the new test and example into Nimble tasks
+  and generated executable ignore rules.
+- Add list and indentation guidance to the README, API landing page, façade
+  docs, and complete Nim-generated API comments for public Phase 3 symbols.
 
 ### Changed
 
@@ -95,6 +124,8 @@ This project follows Semantic Versioning.
 - Mark every completed Phase 1 public API, rendering behavior, test, and
   documentation criterion in `PLAN1.md`.
 - Mark every completed Phase 2 public API, rendering behavior, test, example,
+  and documentation criterion in `PLAN1.md`.
+- Mark every completed Phase 3 public API, rendering behavior, test, example,
   and documentation criterion in `PLAN1.md`.
 
 ### Compatibility
@@ -107,3 +138,6 @@ This project follows Semantic Versioning.
 - Verify the foundation, tree, panel, and import suites with Nim 2.0.10 and
   2.2.10, compile every example on both versions, and pass the complete Nimble
   test, example, documentation, and package-validation tasks.
+- Verify the focused list suite and list example with Nim 2.0.10 and 2.2.10,
+  and pass the complete Nimble test, example, and documentation tasks with Nim
+  2.2.10.

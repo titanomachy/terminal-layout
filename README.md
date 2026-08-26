@@ -1,14 +1,14 @@
 # TerminalLayout
 
 TerminalLayout is the output-only structural layer of the Nim terminal suite.
-It provides generic trees, panels, and cards, and will add nested lists,
-semantic callouts, and banners. Renderers return deterministic strings;
-importing the package or constructing a value never prints, queries the
-terminal, or mutates terminal state.
+It provides generic trees, panels, cards, nested lists, and reusable
+indentation, and will add semantic callouts and banners. Renderers return
+deterministic strings; importing the package or constructing a value never
+prints, queries the terminal, or mutates terminal state.
 
-The package currently contains the shared foundation, complete tree renderer,
-and complete panel/card renderer, with shared tests, examples, and generated
-API documentation.
+The package currently contains the shared foundation plus complete tree,
+panel/card, and list renderers, with shared tests, examples, and generated API
+documentation.
 
 Requires Nim 2.0.0 or newer and TerminalStyle 0.1.1 or newer.
 
@@ -136,6 +136,77 @@ The [panel example](examples/panels.nim) composes representative table and
 graph strings, plus a rendered tree, without taking TerminalTable or
 TerminalGraph as production dependencies.
 
+## Lists and indentation
+
+`ListItem` is an ordered recursive value model used by bullet, numbered, and
+task lists. Concise literals and immutable configuration helpers keep nested
+structures readable:
+
+```nim
+let navigation = [
+  listItem("Project",
+    listItem("Install"),
+    listItem("Verify",
+      listItem("Linux").withTaskState(taskUnchecked),
+      listItem("macOS").withTaskState(taskChecked)
+    ).withChildKind(listTasks)
+  ).withChildKind(listNumbers),
+  listItem("Release")
+]
+
+echo bulletList(navigation)
+```
+
+```text
+• Project
+  1. Install
+  2. Verify
+    ☐ Linux
+    ☑ macOS
+• Release
+```
+
+`renderList` accepts `ListOptions` and a `ListTheme`. The `bulletList`,
+`numberedList`, and `taskList` conveniences select the top-level `ListKind`;
+nested levels inherit that kind unless their parent uses `withChildKind`.
+Unchecked, checked, and indeterminate task states use visible glyphs in plain
+as well as styled output.
+
+```nim
+let procedure = [
+  listItem("Install Nim"),
+  listItem("Run nimble test"),
+  listItem("Publish")
+]
+
+let options = initListOptions(
+  startingNumber = 8,
+  delimiter = ")",
+  overflow = overflowWrap,
+  useColor = false
+).withWidth(24)
+
+echo numberedList(procedure, options)
+echo indent("details\nnext line", 4)
+```
+
+- Ordered markers are right-aligned within each sibling group, so item text
+  remains aligned when numbering crosses from 9 to 10.
+- Wrapped and explicit continuation lines use hanging indentation under the
+  item text. Nested levels add `indentation` cells per depth.
+- Optional width is a maximum complete outer line width; shorter rows are not
+  padded and no trailing spaces are added by list rendering.
+- Unicode and ASCII themes supply validated one-cell bullet and task markers.
+  Custom delimiters may occupy more than one cell but must be plain, visible,
+  and single-line.
+- `useColor = false` strips ANSI from item text, suppresses marker/body styles,
+  and keeps semantic task markers visible.
+- `indent` safely handles ANSI state and multiline LF/CRLF content while
+  adding an explicit number of leading cells.
+
+The [list example](examples/lists.nim) includes a checklist, numbered
+procedure, mixed nested navigation, and generic indentation.
+
 ## Foundation API
 
 The façade also exports the shared foundation and complete TerminalStyle API:
@@ -164,8 +235,8 @@ doAssert displayWidth("界") == 2
 doAssert joinLayoutLines(lines) == "first\nsecond"
 ```
 
-List, callout, and banner renderers will be added vertically in later phases.
-Their module names are already stable and side-effect free.
+Callout and banner renderers will be added vertically in later phases. Their
+module names are already stable and side-effect free.
 
 ## Rendering contract
 
@@ -191,7 +262,9 @@ TerminalLayout components follow these package-wide rules:
   options, validation, and deterministic renderer.
 - `terminal_layout/panels` contains panel/card models, padding, themes,
   validation, fluent configuration, and deterministic rendering.
-- `terminal_layout/lists`, `callouts`, and `banners` are stable component
+- `terminal_layout/lists` contains recursive list items, bullet/number/task
+  themes and options, deterministic rendering, and generic indentation.
+- `terminal_layout/callouts` and `terminal_layout/banners` are stable component
   namespaces for upcoming implementation phases.
 - `terminal_layout` re-exports every stable module and `terminal_style`.
 
@@ -205,4 +278,5 @@ nimble docs
 
 `nimble docs` generates the API reference in `htmldocs/`. The shared fixtures
 cover ANSI, CJK, combining-mark, emoji, empty, multiline, and CRLF input. The
-tree and panel suites add snapshots for their themes and structural edge cases.
+tree, panel, and list suites add exact snapshots, validation/contract checks,
+Unicode/ANSI geometry coverage, and input non-mutation checks.
