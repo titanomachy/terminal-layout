@@ -6,6 +6,24 @@ This project follows Semantic Versioning.
 
 ### Added
 
+- Add a release-oriented README quick start, component gallery, stable-defaults
+  reference, TerminalStyle customization guide, dependency rationale,
+  interoperability diagram, module map, development guidance, and explicit
+  deferred-scope section.
+- Add standalone quick-start, TerminalStyle customization, and string-based
+  TerminalTable/TerminalGraph interoperability examples and register them in
+  the example compilation task.
+- Add a focused public release-contract suite covering façade construction and
+  composition, documented defaults, TerminalStyle re-exports, visible-cell
+  behavior, plain rendering, and LF/CRLF output without trailing separators.
+- Add `CONTRIBUTING.md`, `RELEASING.md`, and `THIRD_PARTY_NOTICES.md` following
+  the terminal-suite conventions and tailored to TerminalLayout's rendering
+  and dependency contracts.
+- Add a `releaseCheck` Nimble task that runs package validation, the full test
+  suite, every example check, and generated documentation.
+- Add Phase 7 API landing-page guidance and expanded Nim-generated module
+  comments for outer widths, line endings, input immutability, glyph styling,
+  and output-only behavior.
 - Add `terminal_style >= 0.1.1` as the shared ANSI styling and Unicode
   terminal-cell layout dependency.
 - Add a side-effect-free `terminal_layout` façade that exports every stable
@@ -191,6 +209,8 @@ This project follows Semantic Versioning.
 
 ### Changed
 
+- Mark completed Phase 7 documentation, testing, example, contributor,
+  notices, and release-readiness work in `PLANS/PLAN1.md`.
 - Lower the compiler floor from Nim 2.2.10 to the suite baseline of Nim 2.0.0.
 - Replace the generated `add`, `Submodule`, and starter-test APIs with the
   TerminalLayout foundation and focused validation tests.
@@ -217,6 +237,12 @@ This project follows Semantic Versioning.
 
 ### Compatibility
 
+- Verify the Phase 7 release gate, generated documentation, all registered
+  examples, and the sibling TerminalTable/TerminalGraph integration suite with
+  Nim 2.2.10 on Linux.
+- Install TerminalStyle and TerminalLayout into an isolated empty Nimble
+  directory and compile a separate consumer against only those installed
+  package copies with Nim 2.2.10.
 - Support Nim 2.0.0 and newer.
 - Require TerminalStyle 0.1.1 or newer.
 - Verify the foundation tests and compile probes with Nim 2.0.10 and 2.2.10.

@@ -4,6 +4,10 @@
 ## and line endings have the same meaning throughout the package. Horizontal
 ## alignment deliberately reuses ``terminal_style.TextAlignment`` rather than
 ## introducing a competing enum.
+##
+## These helpers are output-only and never inspect terminal state. Line
+## operations preserve empty and trailing logical lines and never append an
+## extra separator beyond those represented by the input collection.
 
 import std/strutils
 
@@ -16,6 +20,9 @@ type
 
   LayoutInsets* = object
     ## Non-negative blank space surrounding component content.
+    ##
+    ## Insets are measured in terminal cells horizontally and logical rows
+    ## vertically. Use a validated constructor before storing custom values.
     top*, right*, bottom*, left*: int
 
   OverflowMode* = enum
@@ -100,10 +107,16 @@ proc splitLayoutLines*(value: string): seq[string] =
 proc joinLayoutLines*(lines: openArray[string];
                       lineEnding = defaultLineEnding): string =
   ## Joins logical lines using a validated LF or CRLF separator.
+  ##
+  ## An empty collection produces an empty string. No separator is appended
+  ## after the final supplied line.
   validateLineEnding(lineEnding)
   lines.join(lineEnding)
 
 proc normalizeLineEndings*(value: string;
                            lineEnding = defaultLineEnding): string =
   ## Rewrites LF and CRLF input to one validated output line separator.
+  ##
+  ## Empty and trailing logical lines are retained, and the input string is
+  ## never mutated.
   joinLayoutLines(splitLayoutLines(value), lineEnding)

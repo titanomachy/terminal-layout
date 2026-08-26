@@ -8,6 +8,9 @@
 ## Rendered component strings are intentionally composable: an outer panel,
 ## card, or callout preserves already-fitting child layout rows and may strip
 ## all nested ANSI by setting ``useColor = false``.
+## Widths are complete outer widths measured in visible terminal cells.
+## Renderers accept LF or CRLF output, never append a trailing separator, and
+## validate exported model fields before producing output.
 ##
 ## .. code-block:: nim
 ##

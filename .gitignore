@@ -11,6 +11,7 @@ htmldocs/
 /tests/test_callouts
 /tests/test_banners
 /tests/test_composition
+/tests/test_release_contract
 /tests/test_suite_integration
 /tests/import_probe
 /examples/foundation
@@ -20,6 +21,9 @@ htmldocs/
 /examples/callouts
 /examples/banners
 /examples/all_layouts
+/examples/quick_start
+/examples/customization
+/examples/interoperability
 
 # Nimble development metadata
 nimble.develop

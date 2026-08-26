@@ -6,10 +6,6 @@ semantic callouts, and non-semantic banners. Renderers return
 deterministic strings; importing the package or constructing a value never
 prints, queries the terminal, or mutates terminal state.
 
-The package currently contains the shared foundation plus complete tree,
-panel/card, list, callout, and banner renderers, with shared tests, examples, and
-generated API documentation.
-
 Requires Nim 2.0.0 or newer and TerminalStyle 0.1.1 or newer.
 
 ## Install
@@ -18,6 +14,47 @@ Requires Nim 2.0.0 or newer and TerminalStyle 0.1.1 or newer.
 nimble install terminal_style
 nimble install terminal_layout
 ```
+
+Nimble installs TerminalStyle from the declared package dependency. For an
+unreleased checkout, clone the repository and run `nimble install` from its
+root after making TerminalStyle 0.1.1 available.
+
+## Quick start
+
+Models and renderers are ordinary Nim values and functions. This example
+builds a task list, renders it in plain mode, and uses the resulting string as
+the body of a semantic callout:
+
+```nim
+import terminal_layout
+
+let checks = [
+  listItem("Compile").withTaskState(taskChecked),
+  listItem("Run tests").withTaskState(taskChecked),
+  listItem("Publish").withTaskState(taskUnchecked)
+]
+
+let checklist = taskList(checks, initListOptions(useColor = false))
+echo success(checklist, title = "Release", width = 32,
+  useColor = false).render()
+```
+
+See the compilable [quick-start example](examples/quick_start.nim) for the
+same workflow.
+
+## Component gallery
+
+| Component | Construct with | Render with | Useful for |
+|---|---|---|---|
+| Tree | `tree`, `initTreeNode` | `renderTree`, `render` | Hierarchies and caller-built directory views |
+| Panel/card | `initPanel`, `initCard`, `card` | `renderPanel`, `render` | Width-aware string composition |
+| List | `listItem` | `bulletList`, `numberedList`, `taskList` | Ordered, nested, and semantic task lists |
+| Callout | `info`, `warning`, `failure`, `success` | `renderCallout`, `render` | Semantic status messages |
+| Banner | `initBanner`, `banner` | `renderBanner`, `render` | Non-semantic headings and announcements |
+
+Constructors validate their inputs, and renderers validate exported object
+fields again. The `$` convenience uses the configuration stored in a tree,
+panel, callout, or banner model; lists render an ordered item collection.
 
 ## Trees and hierarchies
 
@@ -329,6 +366,49 @@ TerminalTable and TerminalGraph output in both directions when those
 repositories are present beside TerminalLayout; they remain test-only and are
 not production dependencies.
 
+## TerminalStyle customization
+
+The façade re-exports TerminalStyle, so styles and visible-cell helpers do not
+need a second import. Component themes keep structural, semantic, and content
+styles independent:
+
+```nim
+let accent = initTerminalStyle(
+  foreground = colorCyan,
+  attributes = {taBold})
+
+let theme = customTreeTheme("+", "`", "|", "-",
+  connectorStyle = accent,
+  labelStyle = initTerminalStyle(foreground = colorWhite))
+
+echo tree("terminal_layout", tree("terminal_style")).render(theme = theme)
+```
+
+Custom border, connector, marker, and fill glyphs must contain no ANSI and
+occupy exactly one visible cell. Styles belong in the corresponding style
+fields. See [customization.nim](examples/customization.nim) for styled and
+plain renderings of the same model.
+
+## Dependency rationale and interoperability
+
+TerminalLayout depends directly on TerminalStyle because every component must
+measure visible cells and safely wrap, truncate, pad, and strip text containing
+ANSI controls or multi-code-point graphemes. Sharing those primitives prevents
+the terminal-suite packages from disagreeing about geometry.
+
+TerminalLayout does not depend on TerminalTable or TerminalGraph. Their
+renderers return strings, and those strings are accepted as panel, card, or
+callout bodies. Conversely, a rendered tree or list can be placed in a table
+cell. [interoperability.nim](examples/interoperability.nim) demonstrates that
+boundary without adding either sibling package as a dependency.
+
+```text
+TerminalStyle
+  ├── TerminalTable
+  ├── TerminalGraph
+  └── TerminalLayout
+```
+
 ## Foundation API
 
 The façade also exports the shared foundation and complete TerminalStyle API:
@@ -371,6 +451,23 @@ TerminalLayout components follow these package-wide rules:
 - ASCII output is selected explicitly; the package performs no locale, TTY,
   color, or terminal-width detection.
 
+## Defaults at a glance
+
+| Setting | Default | Meaning |
+|---|---|---|
+| Panel/card/callout width | 40 cells | Complete outer width, including borders and padding |
+| Banner width | 40 cells | Complete rule or boxed width |
+| Tree/list width | unconstrained | Add a positive cell limit with `withWidth` |
+| Overflow | `overflowWrap` | Wrap at words unless another `WrapMode` is selected |
+| Line ending | LF (`"\n"`) | CRLF (`"\r\n"`) is the only alternative |
+| Color | enabled | Set `useColor = false` to strip input ANSI and suppress styles |
+| Output terminator | none | Renderers never append a final LF or CRLF |
+
+Panel and callout content has one blank cell of horizontal padding by default.
+Cards add one cell on all four sides. List nesting adds two cells per depth,
+and tree connector columns occupy three cells by default. Named Unicode themes
+are the defaults; ASCII themes are always selected explicitly.
+
 ## Modules
 
 - `terminal_layout/core` contains shared validation, sizing, overflow, and
@@ -395,6 +492,8 @@ TerminalLayout components follow these package-wide rules:
 nimble test
 nimble examples
 nimble docs
+# Complete local release gate:
+nimble releaseCheck
 # From the terminal-suite workspace, with sibling repositories available:
 nimble suiteIntegration
 ```
@@ -405,3 +504,20 @@ tree, panel, list, callout, banner, and composition suites add exact snapshots,
 validation/contract checks, seeded width properties, Unicode/ANSI geometry and
 style-reset coverage, plain nested-output checks, and input non-mutation
 checks.
+
+Release-contract tests additionally compile and exercise the public façade,
+documented defaults, TerminalStyle re-exports, color disabling, and LF/CRLF
+rules. Example compilation acts as a documentation smoke test; `nimble docs`
+checks all public `##` comments through Nim's documentation generator.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for change requirements,
+[RELEASING.md](RELEASING.md) for the clean-environment and tagging checklist,
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for dependency notices, and
+[CHANGELOG.md](CHANGELOG.md) for user-visible changes.
+
+## Deliberately out of scope
+
+TerminalLayout does not provide filesystem walking, data parsing, terminal or
+color-capability detection, cursor movement, live redraw, interactive widgets,
+Markdown parsing, FIGlet fonts, or direct Table/Graph adapters. Callers own I/O
+and domain traversal; rendered strings remain the stable composition boundary.

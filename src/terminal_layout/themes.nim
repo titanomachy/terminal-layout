@@ -3,6 +3,8 @@
 ## The presets keep structural characters in one place. Every field is one
 ## visible terminal cell, allowing renderers to measure borders, connectors,
 ## markers, semantic symbols, and banner rules consistently.
+## Presets carry no styles and perform no capability detection; callers select
+## Unicode or ASCII explicitly and apply styles in component-specific themes.
 
 import terminal_style
 
@@ -30,6 +32,9 @@ type
 
   LayoutGlyphs* = object
     ## Complete component-neutral glyph vocabulary for one rendering family.
+    ##
+    ## Directly constructed values are validated by component renderers before
+    ## output. ANSI styling belongs in a component theme rather than a glyph.
     border*: BorderGlyphs
     tree*: TreeGlyphs
     list*: ListGlyphs

@@ -8,7 +8,8 @@ Phase 0 establishes the package foundation. Phase 1 adds generic trees, Phase
 2 adds panels and cards, Phase 3 adds nested bullet, numbered, and task lists
 plus generic indentation, Phase 4 adds semantic callouts, and Phase 5 adds
 non-semantic banners. Phase 6 validates cross-component composition, façade
-exports, width properties, and sibling-suite string boundaries.
+exports, width properties, and sibling-suite string boundaries. Phase 7
+documents the stable 0.1.0 surface and its release checks.
 
 - [Main `terminal_layout` façade](terminal_layout.html)
 - [Search all exported symbols](theindex.html)
@@ -19,6 +20,24 @@ exports, width properties, and sibling-suite string boundaries.
 nimble install terminal_style
 nimble install terminal_layout
 ```
+
+## Quick start
+
+```nim
+import terminal_layout
+
+let checks = [
+  listItem("Compile").withTaskState(taskChecked),
+  listItem("Publish").withTaskState(taskUnchecked)
+]
+
+let checklist = taskList(checks, initListOptions(useColor = false))
+echo success(checklist, title = "Release", width = 32,
+  useColor = false).render()
+```
+
+All component renderers return strings, preserve caller-owned models, and add
+no trailing line ending. Widths are measured in visible terminal cells.
 
 ## Tree example
 
@@ -230,3 +249,19 @@ TerminalLayout component.
 nimble docs
 python3 -m http.server 8000 --directory htmldocs
 ```
+
+## Stable defaults and release checks
+
+- Panels, cards, callouts, and banners default to a complete 40-cell outer
+  width. Trees and lists are unconstrained until `withWidth` is used.
+- Content wraps by default. `overflowTruncate` fits each logical row without
+  splitting ANSI sequences or grapheme clusters.
+- Output uses LF by default; validated CRLF is supported. No renderer appends
+  a final separator.
+- Color is explicit. `useColor = false` strips ANSI already in input and
+  suppresses component styles while preserving semantic text markers.
+- `nimble releaseCheck` runs package validation, the full focused test suite,
+  every example check, and documentation generation.
+
+The repository also includes contributor guidance, the release checklist, the
+changelog, and third-party notices alongside the README.
