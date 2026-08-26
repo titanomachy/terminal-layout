@@ -1,0 +1,16 @@
+# Nim compiler and documentation output
+build/
+nimcache/
+htmldocs/
+
+# Generated test and example executables
+/tests/test_core
+/tests/test_trees
+/tests/import_probe
+/examples/foundation
+/examples/trees
+
+# Nimble development metadata
+nimble.develop
+nimble.paths
+nimbledeps
