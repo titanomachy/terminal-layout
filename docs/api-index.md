@@ -5,9 +5,9 @@ It provides shared, Unicode-cell-aware conventions for trees, panels, lists,
 callouts, and banners without printing or querying the terminal.
 
 Phase 0 establishes the package foundation. Phase 1 adds generic trees, Phase
-2 adds panels and cards, and Phase 3 adds nested bullet, numbered, and task
-lists plus generic indentation. The remaining component namespaces already
-compile and will be implemented in later phases.
+2 adds panels and cards, Phase 3 adds nested bullet, numbered, and task lists
+plus generic indentation, and Phase 4 adds semantic callouts. The banner
+namespace already compiles and will be implemented in a later phase.
 
 - [Main `terminal_layout` façade](terminal_layout.html)
 - [Search all exported symbols](theindex.html)
@@ -56,6 +56,17 @@ let checklist = [
 echo taskList(checklist, initListOptions(useColor = false))
 ```
 
+## Callout example
+
+```nim
+import terminal_layout
+
+let result = success("All checks passed", title = "CI", width = 28,
+  useColor = false)
+
+echo result.render()
+```
+
 ## Foundation modules
 
 - [`core`](terminal_layout/core.html) — validated widths and insets, overflow
@@ -67,8 +78,8 @@ echo taskList(checklist, initListOptions(useColor = false))
   themes, validation, fluent configuration, and deterministic rendering.
 - [`lists`](terminal_layout/lists.html) — recursive list models, marker themes,
   rendering options, bullet/number/task conveniences, and indentation.
-- [`callouts`](terminal_layout/callouts.html) — reserved semantic callout
-  namespace.
+- [`callouts`](terminal_layout/callouts.html) — semantic models, explicit
+  palettes, constructors, validation, and panel-backed rendering.
 - [`banners`](terminal_layout/banners.html) — reserved banner namespace.
 
 The façade also re-exports `terminal_style`, including `TextAlignment`, ANSI
@@ -131,6 +142,28 @@ and a tree nested inside panels without extra production dependencies.
 
 See `examples/lists.nim` for a checklist, numbered procedure, mixed nested
 navigation, and generic indentation.
+
+## Callout behavior
+
+- `info`, `warning`, `failure`/`error`, and `success` construct built-in
+  semantic kinds; `initCallout` also supports an explicitly themed custom kind.
+- Boxed callouts delegate border and body geometry to panels. Compact callouts
+  use borderless panels, preserving complete outer-width, padding, overflow,
+  ANSI, and line-ending semantics.
+- Named themes carry a visible label, optional one-cell icon, plain marker,
+  panel preset, and independent marker, body, and border styles. Custom values
+  are validated before rendering.
+- Styled output uses an icon or textual label. Plain output always includes a
+  marker such as `[INFO]` or `[FAIL]`, strips existing ANSI, and never relies
+  on color for meaning.
+- Optional contextual titles follow the semantic marker. The marker must fit
+  completely; contextual text and multiline bodies then wrap or truncate with
+  TerminalStyle's grapheme-aware helpers.
+- Callout renderers return strings, never mutate their models, and never print
+  or append a trailing line ending.
+
+See `examples/callouts.nim` for boxed, compact, custom, and nested-list status
+reports without a logging-framework dependency.
 
 ## Generate locally
 

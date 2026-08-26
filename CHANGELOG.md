@@ -114,6 +114,33 @@ This project follows Semantic Versioning.
   and generated executable ignore rules.
 - Add list and indentation guidance to the README, API landing page, façade
   docs, and complete Nim-generated API comments for public Phase 3 symbols.
+- Add `CalloutKind` information, warning, failure, success, and custom semantic
+  values plus boxed and compact `CalloutPresentation` modes.
+- Add a reusable `Callout` model with body, contextual title, complete outer
+  width, panel padding, explicit theme, wrap/truncate behavior, color control,
+  and LF/CRLF output.
+- Add explicit `CalloutTheme` palettes containing a visible label, optional
+  validated one-cell icon, plain-output marker, panel preset, and independent
+  marker, body, and border styles.
+- Add cyan information, yellow warning, red failure, and green success named
+  themes plus validated `initCalloutTheme` and `customCalloutTheme` APIs.
+- Add `initCallout`, `info`, `warning`, `failure`/`error`, and `success`
+  constructors, immutable configuration helpers, `renderCallout`, `render`,
+  and `$` conveniences.
+- Add panel-backed boxed rendering and borderless-panel compact rendering with
+  shared padding, outer-width, ANSI-aware wrapping/truncation, and line-ending
+  semantics rather than a second box implementation.
+- Add semantic plain markers (`[INFO]`, `[WARN]`, `[FAIL]`, and `[OK]`) that
+  survive ANSI stripping, with marker-preserving narrow-width validation and
+  textual fallback when custom icons are omitted.
+- Add focused callout model, exact boxed/compact/styled/plain snapshot,
+  Unicode/ANSI geometry, reset-containment, multiline composition, empty-body,
+  CRLF, validation, and non-mutation tests for all Phase 4 criteria.
+- Add a callout example covering status reports, nested list content, compact
+  output, and explicit custom palettes without a logging dependency, and wire
+  its test/example files into the Nimble tasks and ignore rules.
+- Add callout guidance to the README, API landing page, façade docs, and clear
+  Nim-generated API comments for every public Phase 4 symbol.
 
 ### Changed
 
@@ -126,6 +153,8 @@ This project follows Semantic Versioning.
 - Mark every completed Phase 2 public API, rendering behavior, test, example,
   and documentation criterion in `PLAN1.md`.
 - Mark every completed Phase 3 public API, rendering behavior, test, example,
+  and documentation criterion in `PLAN1.md`.
+- Mark every completed Phase 4 public API, rendering behavior, test, example,
   and documentation criterion in `PLAN1.md`.
 
 ### Compatibility
@@ -141,3 +170,5 @@ This project follows Semantic Versioning.
 - Verify the focused list suite and list example with Nim 2.0.10 and 2.2.10,
   and pass the complete Nimble test, example, and documentation tasks with Nim
   2.2.10.
+- Verify the focused callout suite and callout example with Nim 2.2.10, and
+  pass the complete Nimble test, example, and documentation tasks.

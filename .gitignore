@@ -8,11 +8,13 @@ htmldocs/
 /tests/test_trees
 /tests/test_panels
 /tests/test_lists
+/tests/test_callouts
 /tests/import_probe
 /examples/foundation
 /examples/trees
 /examples/panels
 /examples/lists
+/examples/callouts
 
 # Nimble development metadata
 nimble.develop

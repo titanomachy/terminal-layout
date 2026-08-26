@@ -1,14 +1,14 @@
 # TerminalLayout
 
 TerminalLayout is the output-only structural layer of the Nim terminal suite.
-It provides generic trees, panels, cards, nested lists, and reusable
-indentation, and will add semantic callouts and banners. Renderers return
+It provides generic trees, panels, cards, nested lists, reusable indentation,
+and semantic callouts, and will add banners. Renderers return
 deterministic strings; importing the package or constructing a value never
 prints, queries the terminal, or mutates terminal state.
 
 The package currently contains the shared foundation plus complete tree,
-panel/card, and list renderers, with shared tests, examples, and generated API
-documentation.
+panel/card, list, and callout renderers, with shared tests, examples, and
+generated API documentation.
 
 Requires Nim 2.0.0 or newer and TerminalStyle 0.1.1 or newer.
 
@@ -207,6 +207,50 @@ echo indent("details\nnext line", 4)
 The [list example](examples/lists.nim) includes a checklist, numbered
 procedure, mixed nested navigation, and generic indentation.
 
+## Semantic callouts
+
+Callouts give status messages a visible semantic marker while reusing panel
+geometry. Built-in constructors cover information, warnings, failures/errors,
+and success:
+
+```nim
+let checks = taskList([
+  listItem("Compile").withTaskState(taskChecked),
+  listItem("Publish").withTaskState(taskUnchecked)
+], initListOptions(useColor = false))
+
+echo success(checks, title = "Release checks", width = 32,
+  useColor = false).render()
+echo warning("Disk usage is above 80%", width = 32,
+  presentation = calloutCompact).render()
+```
+
+`CalloutKind` records semantic intent independently from presentation.
+`calloutBoxed` delegates to the ordinary panel renderer; `calloutCompact` uses
+a borderless panel, retaining the same complete outer width, padding,
+wrapping/truncation, ANSI, and LF/CRLF behavior.
+
+The named `infoCalloutTheme`, `warningCalloutTheme`,
+`failureCalloutTheme`, and `successCalloutTheme` palettes are explicit and do
+not inspect environment or terminal settings. `initCalloutTheme` and
+`customCalloutTheme` accept a visible label, optional validated one-cell icon,
+plain marker, panel preset, and independent marker/body/border styles.
+
+- Styled output uses the theme icon when present and falls back to its textual
+  label when omitted.
+- Plain output always uses a marker such as `[INFO]`, `[WARN]`, `[FAIL]`, or
+  `[OK]`, strips input ANSI, and suppresses theme styles.
+- An optional contextual title follows the semantic marker; narrow rendering
+  may truncate that context or body but never the semantic marker itself.
+- Multiline strings and already-rendered trees, lists, tables, or graphs can
+  be callout bodies. Rendering does not mutate `Callout` values or append a
+  line ending.
+- `calloutCustom` requires an explicit theme, keeping palette selection local
+  and deterministic.
+
+The [callout example](examples/callouts.nim) builds boxed, compact, custom, and
+nested-list status reports as ordinary strings without a logging dependency.
+
 ## Foundation API
 
 The façade also exports the shared foundation and complete TerminalStyle API:
@@ -235,8 +279,8 @@ doAssert displayWidth("界") == 2
 doAssert joinLayoutLines(lines) == "first\nsecond"
 ```
 
-Callout and banner renderers will be added vertically in later phases. Their
-module names are already stable and side-effect free.
+The banner renderer will be added in a later phase. Its module name is already
+stable and side-effect free.
 
 ## Rendering contract
 
@@ -264,8 +308,10 @@ TerminalLayout components follow these package-wide rules:
   validation, fluent configuration, and deterministic rendering.
 - `terminal_layout/lists` contains recursive list items, bullet/number/task
   themes and options, deterministic rendering, and generic indentation.
-- `terminal_layout/callouts` and `terminal_layout/banners` are stable component
-  namespaces for upcoming implementation phases.
+- `terminal_layout/callouts` contains semantic callout models, explicit
+  palettes, convenience constructors, validation, and panel-backed rendering.
+- `terminal_layout/banners` is the stable component namespace for the upcoming
+  banner implementation phase.
 - `terminal_layout` re-exports every stable module and `terminal_style`.
 
 ## Development
@@ -278,5 +324,6 @@ nimble docs
 
 `nimble docs` generates the API reference in `htmldocs/`. The shared fixtures
 cover ANSI, CJK, combining-mark, emoji, empty, multiline, and CRLF input. The
-tree, panel, and list suites add exact snapshots, validation/contract checks,
-Unicode/ANSI geometry coverage, and input non-mutation checks.
+tree, panel, list, and callout suites add exact snapshots,
+validation/contract checks, Unicode/ANSI geometry coverage, and input
+non-mutation checks.
