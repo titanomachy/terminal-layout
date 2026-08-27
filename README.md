@@ -6,7 +6,8 @@ semantic callouts, and non-semantic banners. Renderers return
 deterministic strings; importing the package or constructing a value never
 prints, queries the terminal, or mutates terminal state.
 
-Requires Nim 2.0.0 or newer and TerminalStyle 0.1.1 or newer.
+Requires Nim 2.0.0 or newer and
+[TerminalStyle](https://github.com/titanomachy/terminal-style) 0.1.1 or newer.
 
 ## Full TUI showcase
 
@@ -180,8 +181,10 @@ nim r --path:src examples/trees.nim
 ## Panels and cards
 
 Panels are width-aware composition containers for arbitrary text and rendered
-TerminalLayout, TerminalTable, or TerminalGraph output. Width is always the
-complete outer width, including border columns and horizontal padding:
+TerminalLayout, [TerminalTable](https://github.com/titanomachy/terminal-table),
+or [TerminalGraph](https://github.com/titanomachy/terminal-graph) output. Width
+is always the complete outer width, including border columns and horizontal
+padding:
 
 ```nim
 let report = initPanel(
