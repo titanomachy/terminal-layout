@@ -1,5 +1,7 @@
 ## A caller-supplied project hierarchy.
 
+# Run with: nim r --path:src examples/trees.nim
+
 import terminal_layout
 
 let project = tree("terminal-layout",

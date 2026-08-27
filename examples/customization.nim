@@ -1,5 +1,7 @@
 ## Explicit TerminalStyle and glyph customization.
 
+# Run with: nim r --path:src examples/customization.nim
+
 import terminal_layout
 
 let

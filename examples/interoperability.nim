@@ -3,6 +3,8 @@
 ## TerminalTable and TerminalGraph are intentionally not imported here. Their
 ## renderers return strings, which can be passed to TerminalLayout unchanged.
 
+# Run with: nim r --path:src examples/interoperability.nim
+
 import std/options
 import terminal_layout
 

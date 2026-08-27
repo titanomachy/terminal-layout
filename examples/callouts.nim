@@ -1,5 +1,7 @@
 ## Compact and boxed semantic status reporting.
 
+# Run with: nim r --path:src examples/callouts.nim
+
 import terminal_layout
 
 let checks = taskList([

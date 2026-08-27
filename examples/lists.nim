@@ -1,5 +1,7 @@
 ## A nested release checklist.
 
+# Run with: nim r --path:src examples/lists.nim
+
 import terminal_layout
 
 let

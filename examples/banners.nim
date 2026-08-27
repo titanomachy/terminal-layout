@@ -1,5 +1,7 @@
 ## A section heading and build summary.
 
+# Run with: nim r --path:src examples/banners.nim
+
 import std/options
 import terminal_layout
 

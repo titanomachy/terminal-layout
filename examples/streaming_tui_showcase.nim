@@ -4,6 +4,8 @@
 ## entry point owns terminal refresh behavior while TerminalLayout and
 ## TerminalStyle continue to produce output-only strings.
 
+# Run with: nim r --path:src examples/streaming_tui_showcase.nim
+
 import std/[os]
 import tui_showcase
 

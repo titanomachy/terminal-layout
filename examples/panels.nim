@@ -4,6 +4,8 @@
 ## package demonstrates the integration boundary without production
 ## dependencies on TerminalTable or TerminalGraph.
 
+# Run with: nim r --path:src examples/panels.nim
+
 import std/options
 import terminal_layout
 

@@ -4,6 +4,8 @@
 ## width, theme, and color choice is explicit, and callers retain control over
 ## when the completed report is written.
 
+# Run with: nim r --path:src examples/all_layouts.nim
+
 import std/[options, strutils]
 
 when compiles((block:

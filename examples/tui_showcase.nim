@@ -5,6 +5,8 @@
 ## This example shows how an application can arrange those rendered strings
 ## side by side with TerminalStyle's ANSI-aware measurement and padding.
 
+# Run with: nim r --path:src examples/tui_showcase.nim
+
 import std/[options, strutils]
 
 # The TerminalLayout facade also re-exports TerminalStyle's color, styling,

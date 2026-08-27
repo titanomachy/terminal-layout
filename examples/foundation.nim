@@ -1,5 +1,7 @@
 ## Minimal TerminalLayout façade example.
 
+# Run with: nim r --path:src examples/foundation.nim
+
 import terminal_layout
 
 let

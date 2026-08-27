@@ -34,8 +34,9 @@ nim r --path:src examples/streaming_tui_showcase.nim
 ```
 
 Press Ctrl+C to stop the stream. Pass `--once` to render the finite loop used
-for the animation. The GIF was recorded locally with Asciinema and converted
-with Agg; no account or network data source is required. A
+for the animation. The [source asciicast](docs/recordings/streaming-tui-showcase.cast)
+was recorded locally with Asciinema and converted with Agg using JetBrainsMono
+Nerd Font Mono; no account or network data source is required. A
 [static snapshot](docs/images/tui-showcase.png) is also available.
 
 The example includes a small side-by-side compositor built from
@@ -78,6 +79,10 @@ echo success(checklist, title = "Release", width = 32,
 The screenshot shows the rendered task list nested directly inside the
 success callout. See the compilable
 [quick-start example](examples/quick_start.nim) for the same workflow.
+
+```sh
+nim r --path:src examples/quick_start.nim
+```
 
 ## Component gallery
 
@@ -168,6 +173,10 @@ The [tree example](examples/trees.nim) manually models a directory, JSON-like
 data, and a dependency hierarchy. TerminalLayout deliberately does not walk
 the filesystem or parse JSON on the caller's behalf.
 
+```sh
+nim r --path:src examples/trees.nim
+```
+
 ## Panels and cards
 
 Panels are width-aware composition containers for arbitrary text and rendered
@@ -220,6 +229,10 @@ color, and line endings without mutating the original value.
 The [panel example](examples/panels.nim) composes representative table and
 graph strings, plus a rendered tree, without taking TerminalTable or
 TerminalGraph as production dependencies.
+
+```sh
+nim r --path:src examples/panels.nim
+```
 
 ## Lists and indentation
 
@@ -297,6 +310,10 @@ echo indent("details\nnext line", 4)
 The [list example](examples/lists.nim) includes a checklist, numbered
 procedure, mixed nested navigation, and generic indentation.
 
+```sh
+nim r --path:src examples/lists.nim
+```
+
 ## Semantic callouts
 
 Callouts give status messages a visible semantic marker while reusing panel
@@ -346,6 +363,10 @@ plain marker, panel preset, and independent marker/body/border styles.
 The [callout example](examples/callouts.nim) builds boxed, compact, custom, and
 nested-list status reports as ordinary strings without a logging dependency.
 
+```sh
+nim r --path:src examples/callouts.nim
+```
+
 ## Banners
 
 Banners emphasize application titles, section headings, and announcements
@@ -394,6 +415,10 @@ The [banner example](examples/banners.nim) demonstrates section headings, a
 styled build summary, and a plain application title. Large-font/FIGlet output
 remains intentionally outside the package scope.
 
+```sh
+nim r --path:src examples/banners.nim
+```
+
 ## Composition
 
 Every renderer returns an ordinary string, which is the integration boundary
@@ -433,6 +458,10 @@ TerminalTable and TerminalGraph output in both directions when those
 repositories are present beside TerminalLayout; they remain test-only and are
 not production dependencies.
 
+```sh
+nim r --path:src examples/all_layouts.nim
+```
+
 ## TerminalStyle customization
 
 The façade re-exports TerminalStyle, so styles and visible-cell helpers do not
@@ -461,6 +490,10 @@ occupy exactly one visible cell. Styles belong in the corresponding style
 fields. See [customization.nim](examples/customization.nim) for styled and
 plain renderings of the same model.
 
+```sh
+nim r --path:src examples/customization.nim
+```
+
 ## Dependency rationale and interoperability
 
 TerminalLayout depends directly on TerminalStyle because every component must
@@ -473,6 +506,10 @@ renderers return strings, and those strings are accepted as panel, card, or
 callout bodies. Conversely, a rendered tree or list can be placed in a table
 cell. [interoperability.nim](examples/interoperability.nim) demonstrates that
 boundary without adding either sibling package as a dependency.
+
+```sh
+nim r --path:src examples/interoperability.nim
+```
 
 ![Representative table and graph output composed inside a panel](docs/images/interoperability.png)
 
@@ -513,6 +550,12 @@ doAssert width.cellCount == 40
 doAssert insets.horizontalInset == 4
 doAssert displayWidth("界") == 2
 doAssert joinLayoutLines(lines) == "first\nsecond"
+```
+
+Run the complete [foundation example](examples/foundation.nim):
+
+```sh
+nim r --path:src examples/foundation.nim
 ```
 
 ## Rendering contract
