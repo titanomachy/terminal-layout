@@ -1,6 +1,6 @@
 # TerminalLayout
 
-[![Code coverage](https://codecov.io/gh/titanomachy/terminal-layout/branch/master/graph/badge.svg)](https://codecov.io/gh/titanomachy/terminal-layout)
+[![CI](https://github.com/titanomachy/terminal-layout/actions/workflows/ci.yml/badge.svg)](https://github.com/titanomachy/terminal-layout/actions/workflows/ci.yml)
 
 TerminalLayout is the output-only structural layer of the Nim terminal suite.
 It provides generic trees, panels, cards, nested lists, reusable indentation,
