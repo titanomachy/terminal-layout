@@ -135,7 +135,7 @@ let
         tree("search     ◐").withStyle(amberStyle))),
     tree("staging",
       tree("canary       ●").withStyle(cyanStyle)),
-    tree("東京 replica  ●").withStyle(violetStyle))
+    tree("replica  ●").withStyle(violetStyle))
 
   workspacePanel = initPanel(
     workspace.render(
