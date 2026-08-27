@@ -2,7 +2,9 @@ name: CI
 
 on:
   push:
+    branches: [master]
   pull_request:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
@@ -35,9 +37,6 @@ jobs:
   coverage:
     name: Coverage / Nim stable
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - uses: actions/checkout@v7
       - uses: jiro4989/setup-nim-action@v2
@@ -87,10 +86,3 @@ jobs:
             "$GITHUB_WORKSPACE/src/*" \
             --output-file coverage.info \
             --ignore-errors inconsistent,unused
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v7
-        with:
-          files: coverage.info
-          disable_search: true
-          fail_ci_if_error: true
-          use_oidc: true
