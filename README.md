@@ -8,8 +8,10 @@ semantic callouts, and non-semantic banners. Renderers return
 deterministic strings; importing the package or constructing a value never
 prints, queries the terminal, or mutates terminal state.
 
-Requires Nim 2.0.0 or newer and
-[TerminalStyle](https://github.com/titanomachy/terminal-style) 0.1.1 or newer.
+Requires:
+
+- Nim 2.0.0 or newer
+- [TerminalStyle](https://github.com/titanomachy/terminal-style) 0.1.1 or newer.
 
 ## Full TUI showcase
 
