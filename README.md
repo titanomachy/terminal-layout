@@ -34,11 +34,28 @@ Or run the deterministic, simulated-live
 nim r --path:src examples/streaming_tui_showcase.nim
 ```
 
-Press Ctrl+C to stop the stream. Pass `--once` to render the finite loop used
-for the animation. The [source asciicast](docs/recordings/streaming-tui-showcase.cast)
-was recorded locally with Asciinema and converted with Agg using JetBrainsMono
-Nerd Font Mono; no account or network data source is required. A
+Press Ctrl+C to stop the stream. The example restores text attributes, cursor
+visibility, and the main screen before exiting. Pass `--once` to render the
+finite loop used for the animation. The
+[source asciicast](docs/recordings/streaming-tui-showcase.cast) was recorded
+locally with Asciinema and converted with Agg using JetBrainsMono Nerd Font
+Mono; no account or network data source is required. A
 [static snapshot](docs/images/tui-showcase.png) is also available.
+
+A process cannot clean up after an uncatchable termination such as `kill -9`.
+If that leaves a terminal in the alternate screen or with a hidden cursor,
+Linux and macOS users can run `reset`. In PowerShell, including PowerShell in
+Windows Terminal, the equivalent recovery is:
+
+```powershell
+$esc = [char]27
+[Console]::Write("$($esc)[0m$($esc)[?25h$($esc)[?1049l")
+Clear-Host
+```
+
+That PowerShell form also works in Windows PowerShell 5.1; PowerShell 6 and
+newer additionally support the shorter `` `e `` escape notation. Recovery is
+a last resort, not part of normal example use.
 
 The example includes a small side-by-side compositor built from
 TerminalStyle's `displayWidth` and `padAnsi` helpers. The same pattern can

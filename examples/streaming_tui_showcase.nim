@@ -6,7 +6,7 @@
 
 # Run with: nim r --path:src examples/streaming_tui_showcase.nim
 
-import std/[os]
+import std/[atomics, os]
 import tui_showcase
 
 const
@@ -17,19 +17,22 @@ const
   moveHome = "\e[H"
   clearRemainder = "\e[J"
 
-var keepRunning = true
+var keepRunning: Atomic[bool]
 
 proc stopStreaming() {.noconv.} =
-  keepRunning = false
+  keepRunning.store(false, moRelaxed)
 
 proc streamDashboard(frameLimit = 0) =
+  keepRunning.store(true, moRelaxed)
   setControlCHook(stopStreaming)
-  stdout.write enterAlternateScreen
-  stdout.flushFile()
 
   try:
+    stdout.write enterAlternateScreen
+    stdout.flushFile()
+
     var frame = 0
-    while keepRunning and (frameLimit == 0 or frame < frameLimit):
+    while keepRunning.load(moRelaxed) and
+        (frameLimit == 0 or frame < frameLimit):
       stdout.write moveHome
       stdout.write renderDashboard(frame div 2)
       stdout.write clearRemainder
@@ -39,6 +42,8 @@ proc streamDashboard(frameLimit = 0) =
   finally:
     stdout.write leaveAlternateScreen
     stdout.flushFile()
+    when declared(unsetControlCHook):
+      unsetControlCHook()
 
 when isMainModule:
   let frameLimit =

@@ -31,8 +31,9 @@ cursor movement, and live redraw.
 The companion
 [streaming showcase](../examples/streaming_tui_showcase.nim) demonstrates that
 application layer with deterministic dummy telemetry. It redraws simulated
-frames until interrupted, while `--once` runs the finite loop used for the
-README animation.
+frames until interrupted, restores the main screen and visible cursor after
+Ctrl+C, and uses an atomic stop flag that is safe for Nim's control-C hook.
+The `--once` option runs the finite loop used for the README animation.
 
 ```
 nim r --path:src examples/tui_showcase.nim

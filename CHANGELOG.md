@@ -216,6 +216,10 @@ This project follows Semantic Versioning.
 
 ### Changed
 
+- Make the streaming showcase restore terminal state reliably after Ctrl+C by
+  using an atomic signal flag, covering setup with cleanup, and removing its
+  control-C hook after restoring the main screen and cursor. Document manual
+  Linux, macOS, and PowerShell recovery only for uncatchable termination.
 - Mark completed Phase 7 documentation, testing, example, contributor,
   notices, and release-readiness work in `PLANS/PLAN1.md`.
 - Lower the compiler floor from Nim 2.2.10 to the suite baseline of Nim 2.0.0.
