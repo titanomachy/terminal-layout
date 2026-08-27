@@ -19,6 +19,9 @@ const
   telemetryWidth = 58
   activityWidth = 28
   columnGap = 2
+  workspaceTreeWidth = sidebarWidth - 4
+  workspaceTreeIndentation = 3
+  workspaceMarkerOffset = workspaceTreeWidth - 5
 
 proc columns(blocks: openArray[string]; widths: openArray[int];
              gap = columnGap): string =
@@ -66,6 +69,12 @@ proc capacityLine(label: string; used: int; value: string;
   padAnsi(applyStyle(label, mutedStyle), 5) & " " &
     bar(used, 10, fillStyle, mutedStyle) & " " &
     padAnsi(applyStyle(value, fillStyle), 7, alignRight)
+
+proc workspaceService(label, marker: string; depth: int): string =
+  ## Aligns every service marker to one visible-cell column despite the
+  ## different connector widths introduced by the tree depth.
+  padAnsi(label,
+    workspaceMarkerOffset - depth * workspaceTreeIndentation) & marker
 
 proc telemetryLine(label, samples, value: string;
                    sampleStyle, labelStyle, valueStyle: TerminalStyle): string =
@@ -128,18 +137,19 @@ let
 
   workspace = tree("nexus-cloud",
     tree("production",
-      tree("api-gateway  ●").withStyle(greenStyle),
-      tree("billing      ●").withStyle(greenStyle),
+      tree(workspaceService("api-gateway", "●", 2)).withStyle(greenStyle),
+      tree(workspaceService("billing", "●", 2)).withStyle(greenStyle),
       tree("workers",
-        tree("mailer     ●").withStyle(greenStyle),
-        tree("search     ◐").withStyle(amberStyle))),
+        tree(workspaceService("mailer", "●", 3)).withStyle(greenStyle),
+        tree(workspaceService("search", "◐", 3)).withStyle(amberStyle))),
     tree("staging",
-      tree("canary       ●").withStyle(cyanStyle)),
-    tree("replica  ●").withStyle(violetStyle))
+      tree(workspaceService("canary", "●", 2)).withStyle(cyanStyle)),
+    tree(workspaceService("replica", "●", 1)).withStyle(violetStyle))
 
   workspacePanel = initPanel(
     workspace.render(
-      initTreeOptions(useColor = true).withWidth(sidebarWidth - 4),
+      initTreeOptions(indentation = workspaceTreeIndentation,
+        useColor = true).withWidth(workspaceTreeWidth),
       workspaceTheme),
     width = sidebarWidth,
     title = some("WORKSPACE"),
