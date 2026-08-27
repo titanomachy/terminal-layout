@@ -24,6 +24,8 @@ htmldocs/
 /examples/quick_start
 /examples/customization
 /examples/interoperability
+/examples/tui_showcase
+/examples/streaming_tui_showcase
 
 # Nimble development metadata
 nimble.develop

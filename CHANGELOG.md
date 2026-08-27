@@ -6,6 +6,13 @@ This project follows Semantic Versioning.
 
 ### Added
 
+- Add static and simulated-streaming RGB release-control TUI showcases with a
+  three-column compositor, nested component rendering, exact-width checks, a
+  locally recorded animated README preview, changing telemetry and capacity
+  bars, incoming activity events, API documentation guidance, and example
+  compilation coverage.
+- Add exact rendered-output images to the README component sections and
+  streamline the landing page and standalone examples for new users.
 - Add a release-oriented README quick start, component gallery, stable-defaults
   reference, TerminalStyle customization guide, dependency rationale,
   interoperability diagram, module map, development guidance, and explicit

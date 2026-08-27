@@ -34,6 +34,8 @@ task examples, "Check that all examples compile":
   exec "nim check --path:src examples/quick_start.nim"
   exec "nim check --path:src examples/customization.nim"
   exec "nim check --path:src examples/interoperability.nim"
+  exec "nim check --path:src examples/tui_showcase.nim"
+  exec "nim check --path:src examples/streaming_tui_showcase.nim"
 
 task suiteIntegration, "Check sibling TerminalTable and TerminalGraph composition":
   exec "nim r --path:src --path:../terminal-styles/src --path:../terminal-tables/src --path:../terminal-graphs/src tests/test_suite_integration.nim"

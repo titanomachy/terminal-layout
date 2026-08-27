@@ -6,7 +6,12 @@
 
 import std/[options, strutils]
 
-import terminal_layout
+when compiles((block:
+  import terminal_layout
+)):
+  import terminal_layout
+else:
+  import ../src/terminal_layout
 
 let navigation = @[
   listItem("Overview"),

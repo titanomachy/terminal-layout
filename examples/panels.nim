@@ -5,13 +5,7 @@
 ## dependencies on TerminalTable or TerminalGraph.
 
 import std/options
-
-when compiles((block:
-  import terminal_layout
-)):
-  import terminal_layout
-else:
-  import ../src/terminal_layout
+import terminal_layout
 
 let
   renderedTable =
@@ -46,7 +40,7 @@ let
     renderTree(tree("project", tree("src"), tree("tests"))),
     width = 24,
     title = some("Tree"),
-    theme = asciiPanelTheme,
+    theme = squarePanelTheme,
     useColor = false)
 
 when isMainModule:

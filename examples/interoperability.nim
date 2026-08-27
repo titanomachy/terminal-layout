@@ -4,7 +4,6 @@
 ## renderers return strings, which can be passed to TerminalLayout unchanged.
 
 import std/options
-
 import terminal_layout
 
 let
@@ -14,7 +13,7 @@ let
   renderedDashboard = initPanel(dashboardBody,
     width = 32,
     title = some("Build dashboard"),
-    theme = asciiPanelTheme,
+    theme = squarePanelTheme,
     useColor = false).render()
 
 when isMainModule:

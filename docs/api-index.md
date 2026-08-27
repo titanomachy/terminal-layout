@@ -14,6 +14,30 @@ documents the stable 0.1.0 surface and its release checks.
 - [Main `terminal_layout` façade](terminal_layout.html)
 - [Search all exported symbols](theindex.html)
 
+## Full TUI composition
+
+The [full TUI showcase](../examples/tui_showcase.nim) combines the complete
+component set into a 118-cell release-control dashboard. It uses nested panels,
+a tree, task and activity lists, metric cards, semantic callouts, Unicode
+charts, capacity bars, and a status line. RGB `TerminalStyle` values customize
+each component, while `displayWidth` and `padAnsi` arrange independently
+rendered blocks into three exact-width columns.
+
+The showcase is still output-only: it builds one deterministic string, checks
+the visible width of every non-empty row, and prints only in its
+`when isMainModule` entry point. Applications remain responsible for input,
+cursor movement, and live redraw.
+
+The companion
+[streaming showcase](../examples/streaming_tui_showcase.nim) demonstrates that
+application layer with deterministic dummy telemetry. It redraws simulated
+frames until interrupted, while `--once` runs the finite loop used for the
+README animation.
+
+```
+nim r --path:src examples/tui_showcase.nim
+```
+
 ## Install
 
 ```

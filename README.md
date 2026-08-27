@@ -8,6 +8,40 @@ prints, queries the terminal, or mutates terminal state.
 
 Requires Nim 2.0.0 or newer and TerminalStyle 0.1.1 or newer.
 
+## Full TUI showcase
+
+TerminalLayout components can be combined into complete application screens,
+while TerminalStyle supplies RGB color and ANSI-aware measurement for custom
+composition. This 118-cell release dashboard nests panels, a tree, task and
+activity lists, metric cards, callouts, Unicode charts, capacity bars, and a
+status bar. Its renderer returns each complete frame without querying or
+taking control of the terminal; the streaming entry point performs the redraw
+shown here:
+
+![An animated release-control TUI composed with TerminalLayout and TerminalStyle](docs/images/streaming-tui-showcase.gif)
+
+Run the complete [TUI showcase](examples/tui_showcase.nim):
+
+```sh
+nim r --path:src examples/tui_showcase.nim
+```
+
+Or run the deterministic, simulated-live
+[streaming showcase](examples/streaming_tui_showcase.nim):
+
+```sh
+nim r --path:src examples/streaming_tui_showcase.nim
+```
+
+Press Ctrl+C to stop the stream. Pass `--once` to render the finite loop used
+for the animation. The GIF was recorded locally with Asciinema and converted
+with Agg; no account or network data source is required. A
+[static snapshot](docs/images/tui-showcase.png) is also available.
+
+The example includes a small side-by-side compositor built from
+TerminalStyle's `displayWidth` and `padAnsi` helpers. The same pattern can
+arrange any strings returned by TerminalLayout—or by another terminal library.
+
 ## Install
 
 ```sh
@@ -39,8 +73,11 @@ echo success(checklist, title = "Release", width = 32,
   useColor = false).render()
 ```
 
-See the compilable [quick-start example](examples/quick_start.nim) for the
-same workflow.
+![A release checklist rendered inside a success callout](docs/images/quick-start.png)
+
+The screenshot shows the rendered task list nested directly inside the
+success callout. See the compilable
+[quick-start example](examples/quick_start.nim) for the same workflow.
 
 ## Component gallery
 
@@ -78,6 +115,11 @@ project
 ╰─ tests
    ╰─ test_render.nim
 ```
+
+![A rendered TerminalLayout project tree](docs/images/trees.png)
+
+The screenshot is produced by the same caller-built hierarchy; TerminalLayout
+only lays out the supplied nodes and preserves their order.
 
 `TreeNode` is an ordinary value model, so runtime construction preserves the
 caller's insertion order:
@@ -144,6 +186,11 @@ let report = initPanel(
 echo report.render()
 ```
 
+![Rendered card, metrics panel, and nested tree panel](docs/images/panels.png)
+
+The panel example applies these same width, border, title, and padding rules to
+card, metric, graph, and nested-tree content.
+
 `squarePanelTheme`, `roundedPanelTheme`, `heavyPanelTheme`,
 `doublePanelTheme`, `asciiPanelTheme`, and `borderlessPanelTheme` provide named
 presets. `initPanelTheme` and `customPanelTheme` validate custom one-cell
@@ -204,6 +251,11 @@ echo bulletList(navigation)
 • Release
 ```
 
+![A nested release task list](docs/images/lists.png)
+
+The screenshot shows how numbered and task-list children keep their text
+aligned beneath an ordinary bullet-list parent.
+
 `renderList` accepts `ListOptions` and a `ListTheme`. The `bulletList`,
 `numberedList`, and `taskList` conveniences select the top-level `ListKind`;
 nested levels inherit that kind unless their parent uses `withChildKind`.
@@ -263,6 +315,11 @@ echo warning("Disk usage is above 80%", width = 32,
   presentation = calloutCompact).render()
 ```
 
+![Compact warning and boxed success callouts](docs/images/callouts.png)
+
+Both presentations retain the semantic marker: boxed callouts add panel
+structure, while compact callouts keep the message visually lightweight.
+
 `CalloutKind` records semantic intent independently from presentation.
 `calloutBoxed` delegates to the ordinary panel renderer; `calloutCompact` uses
 a borderless panel, retaining the same complete outer width, padding,
@@ -310,6 +367,11 @@ let summary = initBanner(
 echo summary.render()
 ```
 
+![Rule and boxed banner output](docs/images/banners.png)
+
+The screenshot pairs the lightweight rule form with a boxed announcement built
+from the same banner model.
+
 `plainRuleBannerTheme`, `boxedBannerTheme`, `heavyBannerTheme`,
 `doubleBannerTheme`, and `asciiBannerTheme` provide named presets.
 `initBannerTheme` and `customBannerTheme` validate custom one-cell fill glyphs
@@ -354,6 +416,11 @@ echo initPanel(body, width = 32, title = some("Navigation"),
   useColor = false).render()
 ```
 
+![A report composed from banners, panels, a tree, lists, and a callout](docs/images/all-layouts.png)
+
+The complete example extends the same string-composition pattern across every
+component, with each outer renderer retaining control of its own width.
+
 Already-rendered children retain nested whitespace when their rows fit. The
 outer component owns its own width and color policy: setting its
 `useColor = false` strips ANSI embedded by any child while preserving semantic
@@ -384,6 +451,11 @@ let theme = customTreeTheme("+", "`", "|", "-",
 echo tree("terminal_layout", tree("terminal_style")).render(theme = theme)
 ```
 
+![A tree with custom ASCII connectors](docs/images/customization.png)
+
+This output uses custom structural glyphs and styles while keeping measurement
+and plain-mode behavior identical to the built-in themes.
+
 Custom border, connector, marker, and fill glyphs must contain no ANSI and
 occupy exactly one visible cell. Styles belong in the corresponding style
 fields. See [customization.nim](examples/customization.nim) for styled and
@@ -401,6 +473,12 @@ renderers return strings, and those strings are accepted as panel, card, or
 callout bodies. Conversely, a rendered tree or list can be placed in a table
 cell. [interoperability.nim](examples/interoperability.nim) demonstrates that
 boundary without adding either sibling package as a dependency.
+
+![Representative table and graph output composed inside a panel](docs/images/interoperability.png)
+
+The screenshot demonstrates that rendered table and graph strings remain
+ordinary panel content; TerminalLayout does not need component-specific
+adapters.
 
 ```text
 TerminalStyle
@@ -497,6 +575,28 @@ nimble releaseCheck
 # From the terminal-suite workspace, with sibling repositories available:
 nimble suiteIntegration
 ```
+
+Compile any example from the repository root with the checkout's `src`
+directory on Nim's module path:
+
+```sh
+nim c --path:src examples/foundation.nim
+nim c --path:src examples/trees.nim
+nim c --path:src examples/panels.nim
+nim c --path:src examples/lists.nim
+nim c --path:src examples/callouts.nim
+nim c --path:src examples/banners.nim
+nim c --path:src examples/all_layouts.nim
+nim c --path:src examples/quick_start.nim
+nim c --path:src examples/customization.nim
+nim c --path:src examples/interoperability.nim
+nim c --path:src examples/tui_showcase.nim
+nim c --path:src examples/streaming_tui_showcase.nim
+```
+
+Use `nim c -r --path:src ...` to compile and immediately run an example, or
+run `nimble examples` to type-check the complete set without creating example
+executables.
 
 `nimble docs` generates the API reference in `htmldocs/`. The shared fixtures
 cover ANSI, CJK, combining-mark, emoji, empty, multiline, and CRLF input. The

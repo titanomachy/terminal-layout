@@ -1,11 +1,6 @@
 ## Minimal TerminalLayout façade example.
 
-when compiles((block:
-  import terminal_layout
-)):
-  import terminal_layout
-else:
-  import ../src/terminal_layout
+import terminal_layout
 
 let
   width = initLayoutWidth(32)

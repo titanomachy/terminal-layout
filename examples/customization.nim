@@ -1,4 +1,4 @@
-## Explicit TerminalStyle and glyph customization with a plain-mode fallback.
+## Explicit TerminalStyle and glyph customization.
 
 import terminal_layout
 
@@ -12,10 +12,6 @@ let
     tree("terminal_style"),
     tree("Nim standard library"))
   styledOutput = dependencies.render(theme = customTheme)
-  plainOutput = dependencies.render(
-    initTreeOptions(useColor = false), customTheme)
 
 when isMainModule:
   echo styledOutput
-  echo ""
-  echo plainOutput
