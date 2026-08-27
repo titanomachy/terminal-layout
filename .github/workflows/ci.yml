@@ -31,8 +31,6 @@ jobs:
       - run: nimble check
       - run: nimble test -y
       - run: nimble examples -y
-      - if: matrix.os == 'ubuntu-latest' && matrix.nim == 'stable'
-        run: nimble docs -y
 
   coverage:
     name: Coverage / Nim stable
@@ -86,3 +84,31 @@ jobs:
             "$GITHUB_WORKSPACE/src/*" \
             --output-file coverage.info \
             --ignore-errors inconsistent,unused
+      - name: Generate documentation and coverage badge
+        run: |
+          nimble docs -y
+          bash scripts/coverage_badge.sh coverage.info htmldocs/coverage.svg
+      - name: Configure GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: actions/configure-pages@v5
+      - name: Upload GitHub Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: htmldocs
+
+  deploy:
+    name: Deploy documentation and coverage badge
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: coverage
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

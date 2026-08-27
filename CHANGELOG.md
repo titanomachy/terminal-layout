@@ -2,6 +2,13 @@
 
 This project follows Semantic Versioning.
 
+## Unreleased
+
+### Changed
+
+- Replace the README workflow-status badge with a CI-generated line-coverage
+  percentage badge published alongside the API documentation on GitHub Pages.
+
 ## v0.1.0 - 2026-08-27
 
 ### Added
