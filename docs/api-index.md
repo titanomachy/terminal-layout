@@ -9,7 +9,7 @@ Phase 0 establishes the package foundation. Phase 1 adds generic trees, Phase
 plus generic indentation, Phase 4 adds semantic callouts, and Phase 5 adds
 non-semantic banners. Phase 6 validates cross-component composition, façade
 exports, width properties, and sibling-suite string boundaries. Phase 7
-documents the stable 0.1.0 surface and its release checks.
+documents the stable 0.1.1 surface and its release checks.
 
 - [Main `terminal_layout` façade](terminal_layout.html)
 - [Search all exported symbols](theindex.html)

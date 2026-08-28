@@ -2,12 +2,19 @@
 
 This project follows Semantic Versioning.
 
-## Unreleased
+## v0.1.1 - 2026-08-28
+
+### Added
+
+- Publish the generated API documentation and a CI-generated line-coverage
+  percentage badge through GitHub Pages.
 
 ### Changed
 
-- Replace the README workflow-status badge with a CI-generated line-coverage
-  percentage badge published alongside the API documentation on GitHub Pages.
+- Replace the README workflow-status badge with the published coverage badge.
+- Align status markers in the TUI showcase workspace tree and refresh its
+  static screenshot, animated preview, and deterministic terminal recording.
+- Present the README requirements as a clearer list.
 
 ## v0.1.0 - 2026-08-27
 

@@ -1,6 +1,6 @@
 # Package
 
-version       = "0.1.0"
+version       = "0.1.1"
 author        = "titanomachy"
 description   = "Trees, Panels, Cards, Banners, Callouts, Bullet lists"
 license       = "MIT"

@@ -4,7 +4,7 @@
 dependency is available from Nimble. TerminalTable and TerminalGraph are not
 release dependencies; they compose with TerminalLayout through strings.
 
-## First-release prerequisites
+## Release prerequisites
 
 - Confirm the public repository URL, default branch, package name, and
   maintainer contact for the Nim packages registry submission.
@@ -24,8 +24,8 @@ example compilation, and generated documentation. The sibling-suite
 integration task remains a separate development check because its repositories
 are not package dependencies.
 
-Commit the release, create an annotated `v0.1.0` tag, and push both the commit
-and tag. Submit `terminal_layout` to the
+Commit the release, create an annotated tag matching the manifest version, and
+push both the commit and tag. Submit `terminal_layout` to the
 [`nim-lang/packages`](https://github.com/nim-lang/packages) registry only after
 the tagged repository can be installed by its final URL. Never reuse or move a
 published version tag.
