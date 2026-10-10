@@ -41,6 +41,11 @@ nim r --path:src examples/tui_showcase.nim
 
 ## Install
 
+Requires Nim 2.0.0 or newer and TerminalStyle 0.1.2 or newer. The dependency
+floor includes correct reset handling for RGB colors with zero channels and
+indexed color `0`; active input styles are closed before layout padding and
+borders and restored on continuation rows.
+
 ```
 nimble install terminal_style
 nimble install terminal_layout

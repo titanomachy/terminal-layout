@@ -91,6 +91,63 @@ suite "component composition snapshots":
     check rendered.widths == repeat(20, 5)
 
 suite "nested ANSI and plain rendering":
+  test "contains zero-valued colors and restores them across logical rows":
+    let label = fixtureCjk & fixtureCombining & fixtureEmoji
+    let theme = customCalloutTheme("X", "[X]")
+    for colorCode in fixtureZeroColorCodes:
+      let
+        body = colorCode & label & "\r\nsecond" & termClear
+        first = colorCode & label & termClear
+        second = colorCode & "second" & termClear
+      for lineEnding in ["\n", "\r\n"]:
+        for overflow in [overflowWrap, overflowTruncate]:
+          let panel = initPanel(body, width = 12, overflow = overflow,
+            lineEnding = lineEnding).render()
+          check panel == [
+            "┌──────────┐", "│ " & first & "    │",
+            "│ " & second & "   │", "└──────────┘"].join(lineEnding)
+          check panel.widths == repeat(12, 4)
+          check tree(body).render(initTreeOptions(overflow = overflow,
+            lineEnding = lineEnding)) == first & lineEnding & second
+          check renderList([listItem(body)], initListOptions(
+            overflow = overflow, lineEnding = lineEnding)) ==
+            "• " & first & lineEnding & "  " & second
+          check initCallout(body, calloutCustom, width = 12,
+            theme = some(theme), overflow = overflow,
+            lineEnding = lineEnding).render() == [
+              "┌ X ───────┐", "│ " & first & "    │",
+              "│ " & second & "   │", "└──────────┘"].join(lineEnding)
+        check initBanner(body, width = 12, lineEnding = lineEnding)
+          .render() == ["── " & first & " ───",
+            "── " & second & " ──"].join(lineEnding)
+        check indent(body, 2, lineEnding = lineEnding) ==
+          "  " & first & lineEnding & "  " & second
+        check initPanel(body, width = 12, useColor = false,
+          lineEnding = lineEnding).render() == [
+            "┌──────────┐", "│ " & label & "    │",
+            "│ second   │", "└──────────┘"].join(lineEnding)
+
+  test "contains zero-valued colors after wrapping and truncation":
+    for colorCode in fixtureZeroColorCodes:
+      let body = colorCode & fixtureCjk & fixtureCombining & fixtureEmoji &
+        termClear
+      for lineEnding in ["\n", "\r\n"]:
+        check initPanel(body, width = 8, wrapMode = wrapCharacters,
+          lineEnding = lineEnding).render() == [
+            "┌──────┐", "│ " & colorCode & fixtureCjk & fixtureCombining &
+              termClear & "  │",
+            "│ " & colorCode & fixtureEmoji & termClear & "   │",
+            "└──────┘"].join(lineEnding)
+        check initPanel(body, width = 8, overflow = overflowTruncate,
+          lineEnding = lineEnding).render() == [
+            "┌──────┐", "│ " & colorCode & fixtureCjk & fixtureCombining &
+              termClear & "… │", "└──────┘"].join(lineEnding)
+
+  test "restores color parameters following a reset in the same sequence":
+    let body = "\e[0;31mfirst\nsecond" & termClear
+    check tree(body).render() ==
+      "\e[0;31mfirst" & termClear & "\n\e[31msecond" & termClear
+
   test "contains styles at component boundaries without leaking state":
     let
       items = @[listItem(red("failed")), listItem(green("recovered"))]

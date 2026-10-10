@@ -11,7 +11,7 @@ prints, queries the terminal, or mutates terminal state.
 Requires:
 
 - Nim 2.0.0 or newer
-- [TerminalStyle](https://github.com/titanomachy/terminal-style) 0.1.1 or newer.
+- [TerminalStyle](https://github.com/titanomachy/terminal-style) 0.1.2 or newer.
 
 ## Full TUI showcase
 
@@ -74,7 +74,7 @@ nimble install terminal_layout
 
 Nimble installs TerminalStyle from the declared package dependency. For an
 unreleased checkout, clone the repository and run `nimble install` from its
-root after making TerminalStyle 0.1.1 available.
+root after making TerminalStyle 0.1.2 available.
 
 ## Quick start
 
@@ -524,6 +524,11 @@ TerminalLayout depends directly on TerminalStyle because every component must
 measure visible cells and safely wrap, truncate, pad, and strip text containing
 ANSI controls or multi-code-point graphemes. Sharing those primitives prevents
 the terminal-suite packages from disagreeing about geometry.
+
+TerminalStyle 0.1.2 is the minimum supported version. It preserves RGB colors
+with zero channels and indexed color `0` when wrapping or truncating input.
+Renderers close active input styles before padding, borders, and line endings,
+then restore them on continuation rows so colors do not escape the component.
 
 TerminalLayout does not depend on TerminalTable or TerminalGraph. Their
 renderers return strings, and those strings are accepted as panel, card, or

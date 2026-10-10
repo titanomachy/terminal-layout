@@ -4,7 +4,7 @@ Contributions are welcome through focused issues and pull requests.
 
 ## Development setup
 
-TerminalLayout requires Nim 2.0.0 or newer and `terminal_style` 0.1.1 or
+TerminalLayout requires Nim 2.0.0 or newer and `terminal_style` 0.1.2 or
 newer. Install the dependency from Nimble, or use a sibling
 `terminal-styles` checkout while developing the terminal suite.
 

@@ -8,7 +8,7 @@ release dependencies; they compose with TerminalLayout through strings.
 
 - Confirm the public repository URL, default branch, package name, and
   maintainer contact for the Nim packages registry submission.
-- Confirm `terminal_style >= 0.1.1` can be installed in an empty Nimble
+- Confirm `terminal_style >= 0.1.2` can be installed in an empty Nimble
   directory.
 - From a clean checkout, run `nimble releaseCheck` with Nim 2.0.x, 2.2.x, and
   the latest stable compiler.

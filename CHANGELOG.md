@@ -2,6 +2,17 @@
 
 This project follows Semantic Versioning.
 
+## Unreleased
+
+### Fixed
+
+- Require TerminalStyle 0.1.2 so RGB colors containing zero channels, indexed
+  color `0`, and styles following a combined SGR reset are preserved and closed
+  when rendering, wrapping, or truncating component input.
+- Add exact regression snapshots for color containment across panels, trees,
+  lists, callouts, banners, and indentation, including LF/CRLF, plain output,
+  Unicode graphemes, wrapping, and truncation.
+
 ## v0.1.1 - 2026-08-28
 
 ### Added

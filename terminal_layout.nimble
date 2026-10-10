@@ -10,7 +10,7 @@ srcDir        = "src"
 # Dependencies
 
 requires "nim >= 2.0.0"
-requires "terminal_style >= 0.1.1"
+requires "terminal_style >= 0.1.2"
 
 task test, "Run the terminal_layout test suite":
   exec "nim r --path:src tests/test_core.nim"
