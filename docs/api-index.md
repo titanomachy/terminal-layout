@@ -263,7 +263,8 @@ application-title examples. FIGlet-style large fonts remain deferred.
   keeping plain semantic markers, Unicode graphemes, and visible widths intact.
 - Plain logical rows use direct LF/CRLF splitting; styled rows carry ANSI state
   forward without rescanning previous rows. Large plain and styled panel bodies
-  have exact output and rendering-time regression coverage.
+  have exact output and relative scaling regression coverage, comparing one
+  large body with the same amount of text in smaller batches.
 - Focused composition snapshots cover list/panel, tree/card, list/callout, and
   banner-separated output. Seeded property-style tests vary input and requested
   widths across every constrained component.

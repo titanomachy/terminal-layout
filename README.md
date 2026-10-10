@@ -682,7 +682,8 @@ tree, panel, list, callout, banner, and composition suites add exact snapshots,
 validation/contract checks, seeded width properties, Unicode/ANSI geometry and
 style-reset coverage, plain nested-output checks, and input non-mutation
 checks. Large plain and styled panel bodies have exact output assertions and a
-generous rendering-time guard against quadratic processing.
+scaling check against equal-sized batches on the same runner, avoiding a fixed
+time limit across platforms.
 
 Release-contract tests additionally compile and exercise the public façade,
 documented defaults, TerminalStyle re-exports, color disabling, and LF/CRLF

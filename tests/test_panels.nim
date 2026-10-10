@@ -180,7 +180,10 @@ suite "panel Unicode width and ANSI behavior":
 
 suite "panel rendering contract":
   test "renders large plain and styled bodies without rescanning earlier rows":
-    const rowCount = 8000
+    const
+      rowCount = 8000
+      batchCount = 16
+      batchRows = rowCount div batchCount
     let
       row = "01234567890123456789"
       body = repeat(row & "\n", rowCount - 1) & row
@@ -189,12 +192,22 @@ suite "panel rendering contract":
         repeat(plainRow & "\n", rowCount) & "└" & repeat("─", 38) & "┘"
     for useColor in [false, true]:
       let panel = initPanel(red(body), width = 40, useColor = useColor)
+      let batchBody = repeat(row & "\n", batchRows - 1) & row
+      let batchPanel = initPanel(red(batchBody), width = 40,
+        useColor = useColor)
+      var batchBytes = 0
+      let batchStarted = getMonoTime()
+      for _ in 0 ..< batchCount:
+        batchBytes += batchPanel.render().len
+      let batchElapsed = getMonoTime() - batchStarted
       let started = getMonoTime()
       let rendered = panel.render()
       let elapsed = getMonoTime() - started
-      # A generous budget catches the former quadratic scan (over 15 seconds
-      # even in a release build) without requiring microbenchmark timings.
-      check elapsed < initDuration(seconds = 10)
+      # Compare equal amounts of text on the same runner. Linear processing
+      # takes similar time in either shape; the former quadratic scan takes
+      # about 16 times longer in one body. Allow scheduling and timer noise.
+      check batchBytes > 0
+      check elapsed < batchElapsed * 4 + initDuration(seconds = 1)
       check stripAnsi(rendered) == expected
       check splitLayoutLines(rendered).len == rowCount + 2
       if useColor:

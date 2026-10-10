@@ -16,7 +16,10 @@ This project follows Semantic Versioning.
   wrapping. Share `splitStyledLayoutLines` across renderers and retain styled
   continuation rows through TerminalStyle 0.1.2's forward state tracking.
 - Guard large plain and styled panel rendering against quadratic processing
-  with exact 8,000-row output assertions and a generous rendering-time budget.
+  with exact 8,000-row output assertions and a relative scaling check against
+  equal-sized batches on the same runner.
+- Replace the panel test's fixed ten-second limit, which failed on slower
+  Windows CI runners despite correct rendering, with the relative scaling check.
 
 ## v0.1.1 - 2026-08-28
 
