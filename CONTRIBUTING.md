@@ -17,6 +17,10 @@ nimble examples
 nimble docs
 ```
 
+`nimble examples` compiles and links every example without running it, so
+linker failures are caught alongside type errors. Generated executables are
+ignored by Git.
+
 When sibling TerminalTable and TerminalGraph repositories are available, also
 run:
 

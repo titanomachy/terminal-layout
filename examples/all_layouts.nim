@@ -7,13 +7,7 @@
 # Run with: nim r --path:src examples/all_layouts.nim
 
 import std/[options, strutils]
-
-when compiles((block:
-  import terminal_layout
-)):
-  import terminal_layout
-else:
-  import ../src/terminal_layout
+import terminal_layout
 
 let navigation = @[
   listItem("Overview"),

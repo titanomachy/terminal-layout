@@ -296,7 +296,7 @@ python3 -m http.server 8000 --directory htmldocs
 - Color is explicit. `useColor = false` strips ANSI already in input and
   suppresses component styles while preserving semantic text markers.
 - `nimble releaseCheck` runs package validation, the full focused test suite,
-  every example check, and documentation generation.
+  compilation and linking of every example, and documentation generation.
 
 The repository also includes contributor guidance, the release checklist, the
 changelog, and third-party notices alongside the README.

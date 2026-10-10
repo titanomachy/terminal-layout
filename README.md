@@ -673,8 +673,9 @@ nim c --path:src examples/streaming_tui_showcase.nim
 ```
 
 Use `nim c -r --path:src ...` to compile and immediately run an example, or
-run `nimble examples` to type-check the complete set without creating example
-executables.
+run `nimble examples` to compile and link the complete set without running
+the examples. Generated executables are ignored by Git. CI runs this task to
+catch linker failures as well as type errors.
 
 `nimble docs` generates the API reference in `htmldocs/`. The shared fixtures
 cover ANSI, CJK, combining-mark, emoji, empty, multiline, and CRLF input. The

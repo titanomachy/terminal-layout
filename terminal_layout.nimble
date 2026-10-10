@@ -23,19 +23,19 @@ task test, "Run the terminal_layout test suite":
   exec "nim r --path:src tests/test_release_contract.nim"
   exec "nim r --hints:off --warnings:off --path:src tests/import_probe.nim"
 
-task examples, "Check that all examples compile":
-  exec "nim check --path:src examples/foundation.nim"
-  exec "nim check --path:src examples/trees.nim"
-  exec "nim check --path:src examples/panels.nim"
-  exec "nim check --path:src examples/lists.nim"
-  exec "nim check --path:src examples/callouts.nim"
-  exec "nim check --path:src examples/banners.nim"
-  exec "nim check --path:src examples/all_layouts.nim"
-  exec "nim check --path:src examples/quick_start.nim"
-  exec "nim check --path:src examples/customization.nim"
-  exec "nim check --path:src examples/interoperability.nim"
-  exec "nim check --path:src examples/tui_showcase.nim"
-  exec "nim check --path:src examples/streaming_tui_showcase.nim"
+task examples, "Compile and link all examples":
+  exec "nim c --path:src examples/foundation.nim"
+  exec "nim c --path:src examples/trees.nim"
+  exec "nim c --path:src examples/panels.nim"
+  exec "nim c --path:src examples/lists.nim"
+  exec "nim c --path:src examples/callouts.nim"
+  exec "nim c --path:src examples/banners.nim"
+  exec "nim c --path:src examples/all_layouts.nim"
+  exec "nim c --path:src examples/quick_start.nim"
+  exec "nim c --path:src examples/customization.nim"
+  exec "nim c --path:src examples/interoperability.nim"
+  exec "nim c --path:src examples/tui_showcase.nim"
+  exec "nim c --path:src examples/streaming_tui_showcase.nim"
 
 task suiteIntegration, "Check sibling TerminalTable and TerminalGraph composition":
   exec "nim r --path:src --path:../terminal-styles/src --path:../terminal-tables/src --path:../terminal-graphs/src tests/test_suite_integration.nim"

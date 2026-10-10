@@ -26,6 +26,7 @@ htmldocs/
 /examples/interoperability
 /examples/tui_showcase
 /examples/streaming_tui_showcase
+/examples/*.exe
 
 # Nimble development metadata
 nimble.develop

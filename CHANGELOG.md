@@ -2,6 +2,18 @@
 
 This project follows Semantic Versioning.
 
+## Unreleased
+
+### Fixed
+
+- Import the public facade directly in `examples/all_layouts.nim` so the
+  documented compile/run command links without an explicit pre-import.
+
+### Changed
+
+- Compile and link every example in `nimble examples` and CI instead of only
+  type-checking, guarding against example linker regressions.
+
 ## v0.1.2 - 2026-10-10
 
 ### Fixed
