@@ -2,24 +2,32 @@
 
 This project follows Semantic Versioning.
 
-## Unreleased
+## v0.1.2 - 2026-10-10
 
 ### Fixed
 
 - Require TerminalStyle 0.1.2 so RGB colors containing zero channels, indexed
   color `0`, and styles following a combined SGR reset are preserved and closed
   when rendering, wrapping, or truncating component input.
+- Split ANSI-free logical rows directly instead of routing them through ANSI
+  wrapping and retain styled continuation rows through TerminalStyle 0.1.2's
+  forward state tracking, removing quadratic processing of multiline bodies.
+
+### Added
+
+- Share `splitStyledLayoutLines` across renderers for plain and styled input.
 - Add exact regression snapshots for color containment across panels, trees,
   lists, callouts, banners, and indentation, including LF/CRLF, plain output,
   Unicode graphemes, wrapping, and truncation.
-- Split ANSI-free logical rows directly instead of routing them through ANSI
-  wrapping. Share `splitStyledLayoutLines` across renderers and retain styled
-  continuation rows through TerminalStyle 0.1.2's forward state tracking.
 - Guard large plain and styled panel rendering against quadratic processing
   with exact 8,000-row output assertions and a relative scaling check against
   equal-sized batches on the same runner.
-- Replace the panel test's fixed ten-second limit, which failed on slower
-  Windows CI runners despite correct rendering, with the relative scaling check.
+
+### Changed
+
+- Keep the performance regression check portable across CI runners by comparing
+  equal workloads on the same machine instead of imposing a fixed time limit.
+- Update the GitHub Pages configuration action to its Node.js 24 release.
 
 ## v0.1.1 - 2026-08-28
 
