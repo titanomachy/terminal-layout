@@ -11,6 +11,7 @@
 ## Widths are complete outer widths measured in visible terminal cells.
 ## Requires TerminalStyle 0.1.2 or newer to contain RGB and indexed input
 ## styles at component boundaries and restore them on continuation rows.
+## Shared logical-line splitting avoids ANSI parsing for ANSI-free input.
 ## Renderers accept LF or CRLF output, never append a trailing separator, and
 ## validate exported model fields before producing output.
 ##

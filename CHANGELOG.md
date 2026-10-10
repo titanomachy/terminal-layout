@@ -12,6 +12,11 @@ This project follows Semantic Versioning.
 - Add exact regression snapshots for color containment across panels, trees,
   lists, callouts, banners, and indentation, including LF/CRLF, plain output,
   Unicode graphemes, wrapping, and truncation.
+- Split ANSI-free logical rows directly instead of routing them through ANSI
+  wrapping. Share `splitStyledLayoutLines` across renderers and retain styled
+  continuation rows through TerminalStyle 0.1.2's forward state tracking.
+- Guard large plain and styled panel rendering against quadratic processing
+  with exact 8,000-row output assertions and a generous rendering-time budget.
 
 ## v0.1.1 - 2026-08-28
 

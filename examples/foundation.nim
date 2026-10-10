@@ -12,3 +12,5 @@ let
 doAssert width.cellCount == 32
 doAssert insets.horizontalInset == 4
 doAssert displayWidth(message) == 16
+doAssert splitStyledLayoutLines(red("first\r\nsecond")) ==
+  @[red("first"), red("second")]

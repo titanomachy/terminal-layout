@@ -42,6 +42,27 @@ suite "shared layout foundation":
     check splitLayoutLines(fixtureCrlf) == @["first", "", "third", ""]
     check splitLayoutLines("one\rtwo") == @["one\rtwo"]
 
+  test "splits plain layout rows without altering their contents":
+    for value in [fixtureEmpty, fixtureMultiline, fixtureCrlf,
+        "  first\n\tsecond\n \n", "one\rtwo",
+        fixtureCjk & fixtureCombining & fixtureEmoji]:
+      check splitStyledLayoutLines(value) == splitLayoutLines(value)
+
+  test "splits styled rows while preserving empty rows and ANSI state":
+    for colorCode in fixtureZeroColorCodes:
+      let value = "\r\n" & colorCode & "first\r\n\r\nsecond" &
+        termClear & "\r\n"
+      check splitStyledLayoutLines(value) == @[
+        "", colorCode & "first" & termClear, "",
+        colorCode & "second" & termClear, ""]
+
+  test "closes and restores hyperlinks on logical rows":
+    let
+      opening = "\e]8;;https://example.com\e\\"
+      closing = "\e]8;;\e\\"
+    check splitStyledLayoutLines(opening & "first\nsecond" & closing) == @[
+      opening & "first" & closing, opening & "second" & closing]
+
   test "joins and normalizes only validated output line endings":
     let lines = @["first", "", "third", ""]
     check joinLayoutLines(lines) == "first\n\nthird\n"

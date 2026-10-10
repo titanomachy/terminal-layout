@@ -530,6 +530,10 @@ with zero channels and indexed color `0` when wrapping or truncating input.
 Renderers close active input styles before padding, borders, and line endings,
 then restore them on continuation rows so colors do not escape the component.
 
+Logical rows without ANSI use direct LF/CRLF splitting. Styled rows carry ANSI
+state forward without repeatedly scanning earlier rows, keeping large log and
+table bodies practical to compose.
+
 TerminalLayout does not depend on TerminalTable or TerminalGraph. Their
 renderers return strings, and those strings are accepted as panel, card, or
 callout bodies. Conversely, a rendered tree or list can be placed in a table
@@ -564,6 +568,8 @@ The façade also exports the shared foundation and complete TerminalStyle API:
   `alignLeft`, `alignCenter`, and `alignRight`.
 - `splitLayoutLines`, `joinLayoutLines`, and `normalizeLineEndings` preserve
   empty and trailing lines, accept CRLF input, and emit validated LF or CRLF.
+- `splitStyledLayoutLines` also closes and restores ANSI styles and hyperlinks
+  across rows, while using direct line splitting for ANSI-free input.
 - `unicodeLayoutGlyphs` and `asciiLayoutGlyphs` centralize one-cell border,
   tree, list, callout, and banner characters.
 
@@ -675,7 +681,8 @@ cover ANSI, CJK, combining-mark, emoji, empty, multiline, and CRLF input. The
 tree, panel, list, callout, banner, and composition suites add exact snapshots,
 validation/contract checks, seeded width properties, Unicode/ANSI geometry and
 style-reset coverage, plain nested-output checks, and input non-mutation
-checks.
+checks. Large plain and styled panel bodies have exact output assertions and a
+generous rendering-time guard against quadratic processing.
 
 Release-contract tests additionally compile and exercise the public façade,
 documented defaults, TerminalStyle re-exports, color disabling, and LF/CRLF

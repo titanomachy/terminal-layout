@@ -1,4 +1,4 @@
-import std/[options, sequtils, strutils, unittest]
+import std/[monotimes, options, sequtils, strutils, times, unittest]
 
 import terminal_layout
 import fixtures
@@ -179,6 +179,30 @@ suite "panel Unicode width and ANSI behavior":
     check rendered.splitLines.mapIt(displayWidth(it)) == @[5, 5, 5]
 
 suite "panel rendering contract":
+  test "renders large plain and styled bodies without rescanning earlier rows":
+    const rowCount = 8000
+    let
+      row = "01234567890123456789"
+      body = repeat(row & "\n", rowCount - 1) & row
+      plainRow = "│ " & row & repeat(' ', 17) & "│"
+      expected = "┌" & repeat("─", 38) & "┐\n" &
+        repeat(plainRow & "\n", rowCount) & "└" & repeat("─", 38) & "┘"
+    for useColor in [false, true]:
+      let panel = initPanel(red(body), width = 40, useColor = useColor)
+      let started = getMonoTime()
+      let rendered = panel.render()
+      let elapsed = getMonoTime() - started
+      # A generous budget catches the former quadratic scan (over 15 seconds
+      # even in a release build) without requiring microbenchmark timings.
+      check elapsed < initDuration(seconds = 10)
+      check stripAnsi(rendered) == expected
+      check splitLayoutLines(rendered).len == rowCount + 2
+      if useColor:
+        check rendered.count(termRed) == rowCount
+        check rendered.count(termClear) == rowCount
+      else:
+        check '\e' notin rendered
+
   test "uses complete outer widths, CRLF, and no trailing line ending":
     let rendered = renderPanel(initPanel("body", width = 10,
       lineEnding = "\r\n"))

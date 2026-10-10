@@ -199,16 +199,11 @@ proc effectiveStyle(override: Option[TerminalStyle];
                     fallback: TerminalStyle): TerminalStyle {.inline.} =
   if override.isSome: override.get else: fallback
 
-proc logicalLines(value: string): seq[string] =
-  ## Uses TerminalStyle's state-aware splitter so ANSI styles spanning an
-  ## explicit newline are closed and restored on the resulting lines.
-  wrapAnsi(value, max(1, displayWidth(value)), wrapCharacters)
-
 proc labelLines(label: string; availableWidth: Option[int];
                 options: TreeOptions): seq[string] =
   let value = if options.useColor: label else: stripAnsi(label)
   if availableWidth.isNone:
-    return logicalLines(value)
+    return splitStyledLayoutLines(value)
 
   let width = availableWidth.get
   if width <= 0:
@@ -223,7 +218,7 @@ proc labelLines(label: string; availableWidth: Option[int];
         raise newException(ValueError,
           "tree width cannot contain a complete label grapheme")
   of overflowTruncate:
-    for line in logicalLines(value):
+    for line in splitStyledLayoutLines(value):
       result.add truncateAnsi(line, width)
 
 proc renderTreeNodes(nodes: openArray[TreeNode]; options: TreeOptions;

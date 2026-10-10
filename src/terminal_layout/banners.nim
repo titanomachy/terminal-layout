@@ -201,17 +201,13 @@ proc withLineEnding*(value: Banner; lineEnding: string): Banner =
   result.lineEnding = lineEnding
   result.validateBanner()
 
-proc logicalLines(value: string): seq[string] =
-  # TerminalStyle closes and restores ANSI state around explicit line breaks.
-  wrapAnsi(value, max(1, displayWidth(value)), wrapCharacters)
-
 proc contentLines(value: Banner): seq[string] =
   let text = if value.useColor: value.text else: stripAnsi(value.text)
-  result = logicalLines(text)
+  result = splitStyledLayoutLines(text)
   if value.subtitle.isSome:
     let subtitle = if value.useColor: value.subtitle.get else:
       stripAnsi(value.subtitle.get)
-    result.add logicalLines(subtitle)
+    result.add splitStyledLayoutLines(subtitle)
 
 proc alignedCounts(missing: int;
                    alignment: TextAlignment): tuple[left, right: int] =

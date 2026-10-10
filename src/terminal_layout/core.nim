@@ -11,6 +11,8 @@
 
 import std/strutils
 
+import terminal_style
+
 type
   LayoutWidth* = distinct int
     ## A positive outer width measured in visible terminal cells.
@@ -103,6 +105,17 @@ proc splitLayoutLines*(value: string): seq[string] =
     result.add value[lineStart ..< lineEnd]
     lineStart = index + 1
   result.add value[lineStart ..< value.len]
+
+proc splitStyledLayoutLines*(value: string): seq[string] =
+  ## Splits LF and CRLF input without fitting or discarding logical rows.
+  ##
+  ## ANSI-free input uses direct line splitting without ANSI parsing. Styled
+  ## input closes active SGR and OSC-8 state at each row and restores it on
+  ## continuation rows through TerminalStyle. Empty and trailing rows are
+  ## preserved, and the input is never mutated.
+  if '\e' notin value:
+    return splitLayoutLines(value)
+  wrapAnsi(value, max(1, displayWidth(value)), wrapCharacters)
 
 proc joinLayoutLines*(lines: openArray[string];
                       lineEnding = defaultLineEnding): string =

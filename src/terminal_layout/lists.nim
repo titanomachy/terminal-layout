@@ -263,11 +263,6 @@ proc effectiveStyle(override: Option[TerminalStyle];
                     fallback: TerminalStyle): TerminalStyle {.inline.} =
   if override.isSome: override.get else: fallback
 
-proc logicalLines(value: string): seq[string] =
-  # TerminalStyle closes and restores active ANSI state around explicit line
-  # boundaries while retaining empty and trailing logical lines.
-  wrapAnsi(value, max(1, displayWidth(value)), wrapCharacters)
-
 proc markerFor(item: ListItem; kind: ListKind; ordinal: int;
                options: ListOptions; theme: ListTheme): string =
   case kind
@@ -287,12 +282,12 @@ proc markerFor(item: ListItem; kind: ListKind; ordinal: int;
 proc fittedLines(value: string; width: Option[int];
                  options: ListOptions): seq[string] =
   if width.isNone:
-    return logicalLines(value)
+    return splitStyledLayoutLines(value)
 
   let available = width.get
   if available <= 0:
     if displayWidth(value) == 0:
-      return logicalLines(value)
+      return splitStyledLayoutLines(value)
     raise newException(ValueError,
       "list width leaves no cells available for item text")
 
@@ -304,7 +299,7 @@ proc fittedLines(value: string; width: Option[int];
         raise newException(ValueError,
           "list width cannot contain a complete item grapheme")
   of overflowTruncate:
-    for line in logicalLines(value):
+    for line in splitStyledLayoutLines(value):
       result.add truncateAnsi(line, available)
 
 proc renderList*(items: openArray[ListItem];
@@ -421,6 +416,6 @@ proc indent*(value: string; amount: int;
     content = if useColor: value else: stripAnsi(value)
     prefix = repeat(' ', amount)
   var output: seq[string]
-  for line in logicalLines(content):
+  for line in splitStyledLayoutLines(content):
     output.add prefix & line
   joinLayoutLines(output, lineEnding)

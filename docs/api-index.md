@@ -134,7 +134,8 @@ echo summary.render()
 ## Foundation modules
 
 - [`core`](terminal_layout/core.html) — validated widths and insets, overflow
-  behavior, and multiline helpers.
+  behavior, and multiline helpers. `splitStyledLayoutLines` closes and restores
+  ANSI styles and hyperlinks across rows and directly splits ANSI-free input.
 - [`themes`](terminal_layout/themes.html) — named Unicode and ASCII glyph sets.
 - [`trees`](terminal_layout/trees.html) — tree models, builders, themes,
   validation, options, and ANSI-aware rendering.
@@ -260,6 +261,9 @@ application-title examples. FIGlet-style large fonts remain deferred.
   cards, and callouts accept rendered lists without component adapters.
 - An outer `useColor = false` strips ANSI from already-rendered children while
   keeping plain semantic markers, Unicode graphemes, and visible widths intact.
+- Plain logical rows use direct LF/CRLF splitting; styled rows carry ANSI state
+  forward without rescanning previous rows. Large plain and styled panel bodies
+  have exact output and rendering-time regression coverage.
 - Focused composition snapshots cover list/panel, tree/card, list/callout, and
   banner-separated output. Seeded property-style tests vary input and requested
   widths across every constrained component.

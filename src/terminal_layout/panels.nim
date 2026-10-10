@@ -266,11 +266,6 @@ proc withLineEnding*(panel: Panel; lineEnding: string): Panel =
   result.lineEnding = lineEnding
   result.validatePanel()
 
-proc logicalLines(value: string): seq[string] =
-  # TerminalStyle's wrapping parser safely closes and restores ANSI state at
-  # explicit newlines, even when no width-based wrapping is requested.
-  wrapAnsi(value, max(1, displayWidth(value)), wrapCharacters)
-
 proc bodyLines(panel: Panel; contentWidth: int): seq[string] =
   let value = if panel.useColor: panel.body else: stripAnsi(panel.body)
   case panel.overflow
@@ -278,7 +273,7 @@ proc bodyLines(panel: Panel; contentWidth: int): seq[string] =
     # Preserve already-fitted logical rows exactly. In particular, leading
     # spaces in rendered trees and nested lists are layout data rather than
     # disposable word-wrapping whitespace.
-    for logicalLine in logicalLines(value):
+    for logicalLine in splitStyledLayoutLines(value):
       if displayWidth(logicalLine) <= contentWidth:
         result.add logicalLine
       else:
@@ -289,7 +284,7 @@ proc bodyLines(panel: Panel; contentWidth: int): seq[string] =
               "panel width cannot contain a complete body grapheme")
           result.add line
   of overflowTruncate:
-    for line in logicalLines(value):
+    for line in splitStyledLayoutLines(value):
       result.add truncateAnsi(line, contentWidth)
 
 proc alignedCounts(missing: int; alignment: TextAlignment): tuple[left,
